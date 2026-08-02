@@ -13,3 +13,11 @@ class RegisterForm(UserCreationForm):
             "last_name",
             "role",
         ]
+        
+
+class LoginForm(forms.Form):
+    email=forms.EmailField()
+    password=forms.CharField(
+        widget=forms.PasswordInput
+    )
+    
