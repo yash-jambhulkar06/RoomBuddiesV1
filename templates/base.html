@@ -48,7 +48,15 @@
         <a href="{% url 'wishlist:wishlist_list' %}">
             ❤️ Wishlist ({{ request.user.wishlist_items.count }})
         </a>
-        <a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a>
+       {% if user.role == "PROVIDER" %}
+    <a class="nav-link" href="{% url 'dashboard:provider_dashboard' %}">
+        Provider Dashboard
+    </a>
+{% endif %}
+
+<a class="nav-link" href="{% url 'accounts:dashboard' %}">
+    Dashboard
+</a>
          <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
     </div>
    
