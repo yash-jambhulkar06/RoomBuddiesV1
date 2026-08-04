@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.wishlist',
     'apps.dashboard',
     'apps.chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +79,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
 
 
 # Database
