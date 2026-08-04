@@ -27,6 +27,7 @@ urlpatterns = [
     path("wishlist/",include("apps.wishlist.urls")),
     path("reviews/",include("apps.reviews.urls")),
     path("dashboard/",include("apps.dashboard.urls")),
+    path("chat/",include("apps.chat.urls")),
 ]
 
 
