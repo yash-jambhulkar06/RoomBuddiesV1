@@ -64,9 +64,13 @@ def chat_room(request, conversation_id):
     else:
         form = MessageForm()
 
-    messages = conversation.messages.select_related(
-        "sender"
-    ).all()
+    messages = conversation.messages.filter(
+        is_read=False
+    ).exclude(
+        sender=request.user
+    ).update(
+        is_read=True
+    )
 
     return render(
         request,

@@ -34,8 +34,18 @@
                     </p>
 
                     <small class="text-muted">
-                        Started on {{ conversation.created_at|date:"d M Y H:i" }}
-                    </small>
+
+    {% with last_message=conversation.messages.last %}
+
+        {% if last_message %}
+            {{ last_message.created_at|date:"d M H:i" }}
+        {% else %}
+            {{ conversation.created_at|date:"d M H:i" }}
+        {% endif %}
+
+    {% endwith %}
+
+</small>
 
                 </a>
 
