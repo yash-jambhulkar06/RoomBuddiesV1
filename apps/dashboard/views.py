@@ -40,6 +40,13 @@ def provider_dashboard(request):
         "room",
     ).order_by("-created_at")[:5]
     
+    recent_reviews=Review.objects.filter(
+        room__owner=request.user
+    ).select_related(
+        "user",
+        "room",
+    ).order_by("-created_at")[:5]
+    
     context={
         "stats":{
         "rooms":rooms,
@@ -50,6 +57,7 @@ def provider_dashboard(request):
         },
         "rooms":rooms,
         "recent_bookings":recent_bookings,
+        "recent_reviews":recent_reviews,
     }
     
     
