@@ -42,6 +42,7 @@ class ChatConsumer(WebsocketConsumer):
                 "type":"chat_message",
                 "message":message.message,
                 "sender":user.first_name,
+                "sender_id":user.id,
             }
         )
         
@@ -52,5 +53,6 @@ class ChatConsumer(WebsocketConsumer):
             text_data=json.dumps({
                 "message":event["message"],
                 "sender":event["sender"],
+                "sender_id":event["sender_id"],
             })
         )

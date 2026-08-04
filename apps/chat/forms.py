@@ -9,6 +9,7 @@ class MessageForm(forms.ModelForm):
         widgets={
             "message":forms.TextInput(
                 attrs={
+                    "id":"chat-message-input",
                     "class":"form-control",
                     "placeholder":"Type your message...",
                     "autocomplete":"off",

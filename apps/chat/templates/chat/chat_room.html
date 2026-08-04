@@ -46,6 +46,7 @@
   </form>
 </div>
 <script>
+    const currentUserId="{{ request.user.id }}";
   const chatBox = document.querySelector(".chat-box");
   if (chatBox) {
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -72,11 +73,12 @@
   socket.onmessage=function(event){
 
     const data=JSON.parse(event.data);
+    const isMine=Number(currentUserId)=== data.sender_id;
 
     const messageDiv=document.createElement("div");
     messageDiv.className="mb-3";
 
-    messageDiv.innerHTML=`<strong>You</strong><br>${event.data}`;
+    messageDiv.innerHTML=`<strong>${isMine ? "You":data.sender}</strong><br>${data.message}`;
 
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop=chatBox.scrollHeight;
@@ -85,7 +87,7 @@
 
 
   const chatForm = document.getElementById("chat-form");
-const messageInput = document.getElementById("chat-message-input");
+const messageInput = document.querySelector("input[name='message'],textarea[name='message']");
 
 chatForm.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -97,6 +99,14 @@ chatForm.addEventListener("submit", function (e) {
     socket.send(message);
 
     messageInput.value = "";
+});
+
+
+messageInput.addEventListener("keydown",function(e){
+    if(e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        chatForm.requestSubmit();
+    }
 });
 </script>
 {% endblock %}
