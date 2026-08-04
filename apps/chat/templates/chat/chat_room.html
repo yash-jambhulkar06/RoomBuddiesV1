@@ -88,6 +88,7 @@
 
   const chatForm = document.getElementById("chat-form");
 const messageInput = document.querySelector("input[name='message'],textarea[name='message']");
+messageInput.focus();
 
 chatForm.addEventListener("submit", function (e) {
     e.preventDefault();
