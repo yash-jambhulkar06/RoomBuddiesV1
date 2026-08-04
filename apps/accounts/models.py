@@ -49,6 +49,8 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.USER,
     )
+    
+    is_online=models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
