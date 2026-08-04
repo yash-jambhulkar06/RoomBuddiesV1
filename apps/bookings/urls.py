@@ -15,4 +15,5 @@ urlpatterns=[
     path("<int:booking_id>/accept/",accept_booking,name="accept_booking"),
     path("<int:booking_id>/reject/",reject_booking,name="reject_booking"),
     path("my/",my_bookings,name="my_bookings"),
+
 ]

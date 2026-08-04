@@ -2,14 +2,27 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.rooms.models import Room
 from .models import Conversation
+from django.http import HttpResponseForbidden
 
 @login_required
 def conversation_list(request):
     return render(request,"chat/conversation_list.html")
 
 @login_required
-def chat_room(request):
-    return render(request,"chat/chat_room.html")
+def chat_room(request,conversation_id):
+    conversation=get_object_or_404(
+        Conversation,
+        id=conversation_id,
+    )
+    
+    if request.user not in (
+        conversation.user,
+        conversation.provider,
+    ):
+        return HttpResponseForbidden("You are not allowed to access this conversation")
+    messages=conversation.messages.select_related("sender").all()
+    
+    return render(request,"chat/chat_room.html" ,{"conversation":conversation,"messages":messages,})
 
 @login_required
 def start_conversation(request,room_id):
