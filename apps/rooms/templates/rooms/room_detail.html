@@ -96,6 +96,9 @@
     <p>
         <a href="{% url 'bookings:book_room' room.id %}">Book Room</a>
     </p>
+    {% if user.is_authenticated and user!=room.owner %}
+        <a href="{% url 'chat:start_conversation' room.id %}" class="btn btn-primary">Message Provider</a>
+    {% endif %}
 
     <p>
         <a href="{% url 'rooms:edit_room' room.id %}">Edit Room</a>
