@@ -18,6 +18,8 @@ class ChatConsumer(WebsocketConsumer):
         )
         
         self.accept()
+        self.scope["user"].is_online = True
+        self.scope["user"].save(update_fields=["is_online"])
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
