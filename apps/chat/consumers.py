@@ -27,13 +27,14 @@ class ChatConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         data=json.loads(text_data)
-        if data["time"] =="typing":
+        if data["type"] =="typing":
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,{
                     "type":"typing_status",
                     "sender_id":self.scope["user"].id,
-                }
+                },
             )
+            return
         user=self.scope["user"]
         conversation=Conversation.objects.get(
             id=self.conversation_id
@@ -42,7 +43,7 @@ class ChatConsumer(WebsocketConsumer):
         message=Message.objects.create(
             conversation=conversation,
             sender=user,
-            message=text_data,
+            message=data["message"],
         )
         
         async_to_sync(self.channel_layer.group_send)(
@@ -56,13 +57,22 @@ class ChatConsumer(WebsocketConsumer):
         )
         
     def chat_message(self,event):
-        message=event["message"]
+        message=event["message"],
         
         self.send(
             text_data=json.dumps({
+                "type":"message",
                 "message":event["message"],
                 "sender":event["sender"],
                 "sender_id":event["sender_id"],
                 "time":event["time"],
+            })
+        )
+        
+    def typing_status(self,event):
+        self.send(
+            text_data=json.dumps({
+                "type":"typing",
+                "sender_id":event["sender_id"],
             })
         )
