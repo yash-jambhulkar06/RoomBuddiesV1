@@ -5,9 +5,31 @@ from .models import Conversation
 from django.http import HttpResponseForbidden
 from .forms import MessageForm
 
+from django.db.models import Q
+
+
 @login_required
 def conversation_list(request):
-    return render(request,"chat/conversation_list.html")
+    conversations = (
+        Conversation.objects.filter(
+            Q(user=request.user) |
+            Q(provider=request.user)
+        )
+        .select_related(
+            "room",
+            "user",
+            "provider",
+        )
+        .order_by("-created_at")
+    )
+
+    return render(
+        request,
+        "chat/conversation_list.html",
+        {
+            "conversations": conversations,
+        },
+    )
 
 @login_required
 def chat_room(request, conversation_id):

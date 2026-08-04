@@ -2,57 +2,70 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="container mt-4 chat-container">
 
-    <h2>
+    <h2 class="mb-4">
         Chat about: {{ conversation.room.title }}
     </h2>
 
-    <div class="card mt-4">
+    <div class="chat-box">
 
-        <div class="card-body">
+        {% for message in messages %}
 
-            {% for message in messages %}
+            {% if message.sender == request.user %}
 
-                <div class="mb-3">
+                <div class="message sent">
 
-                    <strong>
-
-                        {% if message.sender == request.user %}
-                            You
-                        {% else %}
-                            {{ message.sender.first_name }}
-                        {% endif %}
-
-                    </strong>
+                    <strong>You</strong>
 
                     <br>
 
                     {{ message.message }}
 
-                    <br>
-
-                    <small class="text-muted">
-                        {{ message.created_at|date:"d M Y H:i" }}
-                    </small>
+                    <div class="message-time">
+                        {{ message.created_at|date:"d M H:i" }}
+                    </div>
 
                 </div>
 
-                <form method="post" class="mt-4">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Send</button>
-                </form>
+            {% else %}
 
-            {% empty %}
+                <div class="message received">
 
-                <p>No messages yet.</p>
+                    <strong>{{ message.sender.first_name }}</strong>
 
-            {% endfor %}
+                    <br>
 
-        </div>
+                    {{ message.message }}
+
+                    <div class="message-time">
+                        {{ message.created_at|date:"d M H:i" }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        {% empty %}
+
+            <p class="text-center">No messages yet.</p>
+
+        {% endfor %}
 
     </div>
+
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+
+        <div class="input-group mt-3">
+            {{ form.message }}
+        
+
+        <button type="submit" class="btn btn-primary">
+            Send
+        </button>
+        </div>
+    </form>
 
 </div>
 

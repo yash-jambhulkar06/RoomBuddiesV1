@@ -34,3 +34,11 @@
     opacity:.7;
     margin-top:5px;
 }
+
+.input-group input{
+    border-radius: 12px 0 0 12px;
+}
+
+.input-group button{
+    border-radius: 0 12px 12px 0;
+}
