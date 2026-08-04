@@ -46,7 +46,11 @@
 
     {% endif %} {% empty %}
 
-    <p class="text-center">No messages yet.</p>
+    <div class="text-center py-5 text-muted">
+      <div style="font-size: 60px;">💬</div>
+      <h5>No message yet</h5>
+      <p>Start the conversation by sending the first message.</p>
+    </div>
 
     {% endfor %}
   </div>
