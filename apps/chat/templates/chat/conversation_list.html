@@ -15,13 +15,23 @@
                 <a href="{% url 'chat:chat_room' conversation.id %}"
                    class="list-group-item list-group-item-action">
 
-                    <h5 class="mb-1">
-                        {% if request.user == conversation.user %}
-                            {{ conversation.provider.first_name }}
-                        {% else %}
-                            {{ conversation.user.first_name }}
-                        {% endif %}
-                    </h5>
+                  <h5 class="d-flex justify-content-between align-items-center">
+
+    <span>
+        {% if request.user == conversation.user %}
+            {{ conversation.provider.first_name }}
+        {% else %}
+            {{ conversation.user.first_name }}
+        {% endif %}
+    </span>
+
+    {% if conversation.unread_count > 0 %}
+        <span class="badge bg-danger rounded-pill">
+            {{ conversation.unread_count }}
+        </span>
+    {% endif %}
+
+</h5>
 
                     <p class="mb-1">
                         {% with last_message=conversation.messages.last %}

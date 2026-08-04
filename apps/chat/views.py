@@ -4,26 +4,17 @@ from apps.rooms.models import Room
 from .models import Conversation
 from django.http import HttpResponseForbidden
 from .forms import MessageForm
+from .services import mark_conversation_as_read
+from .selector import get_user_conversations
 
 from django.db.models import Q
 
 
 @login_required
 def conversation_list(request):
-    conversations = (
-        Conversation.objects.filter(
-            Q(user=request.user) |
-            Q(provider=request.user)
-        )
-        .select_related(
-            "room",
-            "user",
-            "provider",
-        )
-        .prefetch_related("messages")
-        .order_by("-created_at")
+    conversations=get_user_conversations(
+        request.user
     )
-
     return render(
         request,
         "chat/conversation_list.html",
@@ -64,13 +55,14 @@ def chat_room(request, conversation_id):
     else:
         form = MessageForm()
 
-    messages = conversation.messages.filter(
-        is_read=False
-    ).exclude(
-        sender=request.user
-    ).update(
-        is_read=True
+    mark_conversation_as_read(
+        conversation,
+        request.user,
     )
+    
+    messages=conversation.messages.select_related(
+        "sender"
+    ).all()
 
     return render(
         request,
