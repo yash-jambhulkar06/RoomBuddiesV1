@@ -78,7 +78,8 @@
     const messageDiv=document.createElement("div");
     messageDiv.className="mb-3";
 
-    messageDiv.innerHTML=`<strong>${isMine ? "You":data.sender}</strong><br>${data.message}`;
+    messageDiv.innerHTML=`<strong>${isMine ? "You":data.sender}</strong><br>${data.message}
+    <div class="message-time">${date.time}</div>`;
 
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop=chatBox.scrollHeight;
