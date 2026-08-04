@@ -181,6 +181,50 @@
 
 </div>
 
+
+
+<h2 class="mt-5 mb-4">Recent Reviews</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        {% if recent_reviews %}
+
+            {% for review in recent_reviews %}
+
+                <div class="border-bottom mb-3 pb-3">
+
+                    <h5>{{ review.room.title }}</h5>
+
+                    <p>
+                        👤 <strong>{{ review.user.email }}</strong>
+                    </p>
+
+                    <p>
+                        ⭐ {{ review.rating }}/5
+                    </p>
+
+                    <p>
+                        {{ review.comment }}
+                    </p>
+
+                    <small class="text-muted">
+                        {{ review.created_at|date:"d M Y" }}
+                    </small>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No reviews yet.</p>
+
+        {% endif %}
+
+    </div>
+</div>
+
 {% empty %}
 
 <div class="col-12">
