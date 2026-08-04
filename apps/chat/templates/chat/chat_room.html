@@ -71,6 +71,8 @@
 
   socket.onmessage=function(event){
 
+    const data=JSON.parse(event.data);
+
     const messageDiv=document.createElement("div");
     messageDiv.className="mb-3";
 
