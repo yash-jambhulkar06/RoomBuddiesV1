@@ -10,22 +10,50 @@ def conversation_list(request):
     return render(request,"chat/conversation_list.html")
 
 @login_required
-def chat_room(request,conversation_id):
-    conversation=get_object_or_404(
+def chat_room(request, conversation_id):
+    conversation = get_object_or_404(
         Conversation,
         id=conversation_id,
     )
-    
+
     if request.user not in (
         conversation.user,
         conversation.provider,
     ):
-        return HttpResponseForbidden("You are not allowed to access this conversation")
-    messages=conversation.messages.select_related("sender").all()
-    form=MessageForm()
-    return render(request,"chat/chat_room.html" ,{"conversation":conversation,
-                                                  "messages":messages,
-                                                  "form":form,})
+        return HttpResponseForbidden(
+            "You are not allowed to access this conversation."
+        )
+
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.conversation = conversation
+            message.sender = request.user
+            message.save()
+
+            return redirect(
+                "chat:chat_room",
+                conversation_id=conversation.id,
+            )
+
+    else:
+        form = MessageForm()
+
+    messages = conversation.messages.select_related(
+        "sender"
+    ).all()
+
+    return render(
+        request,
+        "chat/chat_room.html",
+        {
+            "conversation": conversation,
+            "messages": messages,
+            "form": form,
+        },
+    )
 
 @login_required
 def start_conversation(request,room_id):
