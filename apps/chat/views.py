@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from apps.rooms.models import Room
 from .models import Conversation
 from django.http import HttpResponseForbidden
+from .forms import MessageForm
 
 @login_required
 def conversation_list(request):
@@ -21,8 +22,10 @@ def chat_room(request,conversation_id):
     ):
         return HttpResponseForbidden("You are not allowed to access this conversation")
     messages=conversation.messages.select_related("sender").all()
-    
-    return render(request,"chat/chat_room.html" ,{"conversation":conversation,"messages":messages,})
+    form=MessageForm()
+    return render(request,"chat/chat_room.html" ,{"conversation":conversation,
+                                                  "messages":messages,
+                                                  "form":form,})
 
 @login_required
 def start_conversation(request,room_id):

@@ -4,11 +4,55 @@
 
 <div class="container mt-4">
 
-    <h2>Chat Room</h2>
+    <h2>
+        Chat about: {{ conversation.room.title }}
+    </h2>
 
-    <p>
-        Messages will appear here.
-    </p>
+    <div class="card mt-4">
+
+        <div class="card-body">
+
+            {% for message in messages %}
+
+                <div class="mb-3">
+
+                    <strong>
+
+                        {% if message.sender == request.user %}
+                            You
+                        {% else %}
+                            {{ message.sender.first_name }}
+                        {% endif %}
+
+                    </strong>
+
+                    <br>
+
+                    {{ message.message }}
+
+                    <br>
+
+                    <small class="text-muted">
+                        {{ message.created_at|date:"d M Y H:i" }}
+                    </small>
+
+                </div>
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+
+            {% empty %}
+
+                <p>No messages yet.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
 
 </div>
 
