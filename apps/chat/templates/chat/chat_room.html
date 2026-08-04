@@ -3,7 +3,7 @@
 <div class="container mt-4 chat-container">
   <h2 class="mb-4">Chat about: {{ conversation.room.title }}</h2>
 
-  <div class="chat-box">
+  <div class="card-body chat-box">
     {% for message in messages %} {% if message.sender == request.user %}
 
     <div class="message sent">
@@ -69,8 +69,15 @@
     console.log("WebSocket Error:", error);
   };
 
-  socket.onmessage = function (event) {
-    console.log("Message:", event.data);
+  socket.onmessage=function(event){
+
+    const messageDiv=document.createElement("div");
+    messageDiv.className="mb-3";
+
+    messageDiv.innerHTML=`<strong>You</strong><br>${event.data}`;
+
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop=chatBox.scrollHeight;
   };
 
 
