@@ -1,5 +1,8 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
+import json
+from django.contrib.auth import get_user_model
+from .models import Conversation,Message
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -23,12 +26,22 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def receive(self, text_data):
-
+        user=self.scope["user"]
+        conversation=Conversation.objects.get(
+            id=self.conversation_id
+        )
+        
+        message=Message.objects.create(
+            conversation=conversation,
+            sender=user,
+            message=text_data,
+        )
+        
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                "type": "chat_message",
-                "message": text_data,
+            self.room_group_name,{
+                "type":"chat_message",
+                "message":message.message,
+                "sender":user.first_name,
             }
         )
         
@@ -36,5 +49,8 @@ class ChatConsumer(WebsocketConsumer):
         message=event["message"]
         
         self.send(
-            text_data=message,
+            text_data=json.dumps({
+                "message":event["message"],
+                "sender":event["sender"],
+            })
         )
