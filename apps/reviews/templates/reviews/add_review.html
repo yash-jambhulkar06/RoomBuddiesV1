@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Review for {{ room.title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Submit Review
+    </button>
+</form>
+
+<p>
+    <a href="{% url 'rooms:room_details' room.id %}">
+        Back to Room
+    </a>
+</p>
+
+{% endblock %}

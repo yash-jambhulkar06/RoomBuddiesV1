@@ -3,34 +3,28 @@ from django.conf import settings
 from apps.rooms.models import Room
 
 
-class Review(models.Model):
+class Wishlist(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="reviews",
+        related_name="wishlist_items",
     )
 
     room = models.ForeignKey(
         Room,
         on_delete=models.CASCADE,
-        related_name="reviews",
+        related_name="wishlist_items",
     )
 
-    rating = models.PositiveSmallIntegerField()
-
-    comment = models.TextField()
-
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "room"],
-                name="unique_user_room_review",
+                name="unique_user_room_wishlist",
             )
         ]
 
     def __str__(self):
-        return f"{self.user.email} - {self.room.title} ({self.rating}/5)"
+        return f"{self.user.email} ❤️ {self.room.title}"

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Delete Room</title>
+    </head>
+    <body>
+        <h1>Delete Room</h1>
+        <p>Are you sure you want to delete 
+            <strong>{{ room.title }}</strong>?
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <button type="submit">Yes, Delete</button>
+        </form>
+
+        <p>
+            <a href="{% url 'rooms:room_detail' room.id %}">Cancel</a>
+        </p>
+    </body>
+</html>

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>Profile</h3>
+
+                    <p>Email: {{ user.email }}</p>
+
+                    <p>Role: {{ user.get_role_display }}</p>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+           <div class="card">
+    <div class="card-body">
+
+        <h3>Quick Actions</h3>
+
+        {% if user.role == "USER" %}
+
+            <a href="#" class="btn btn-primary mb-2">Search Rooms</a><br>
+
+            <a href="#" class="btn btn-success mb-2">My Bookings</a><br>
+
+            <a href="#" class="btn btn-warning">Wishlist</a>
+
+        {% elif user.role == "PROVIDER" %}
+
+            <a href="#" class="btn btn-primary mb-2">Manage Services</a><br>
+
+            <a href="#" class="btn btn-success">View Bookings</a>
+
+        {% endif %}
+
+    </div>
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

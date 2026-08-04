@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+         <title>Edit Room</title>
+    </head>
+    <body>
+        <h1>Edit Room</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit">Update Room</button>
+        </form>
+        <p>
+            <a href="{% url 'rooms:room_detail' room.id %}">Cancel</a>
+        </p>
+    </body>
+   
+</html>

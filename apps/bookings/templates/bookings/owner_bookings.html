@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Owner Booking Request</title>
+    </head>
+    <body>
+        <h1>Booking Request</h1>
+        {% if bookings %}
+        <table border="1" cellpading="8">
+            <tr>
+                <th>User</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Requested On</th>
+            </tr>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.user.email }}</td>
+                <td>{{ booking.room.title }}</td>
+                <td>{{ booking.status }}</td>
+                <td>{{ booking.created_at }}</td>
+                <td>
+                    {% if booking.status == "PENDING" %}
+                    <a href="{% url 'bookings:accept_booking' booking.id %}">Accept</a>|
+                    <a href="{% url 'bookings:reject_booking' booking.id %}">Reject</a>
+                    {% else %}
+                    No Action 
+                    {% endif %}
+                </td>
+            
+            </tr>
+
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No booking request yet</p>
+        {% endif %}
+    </body>
+</html>

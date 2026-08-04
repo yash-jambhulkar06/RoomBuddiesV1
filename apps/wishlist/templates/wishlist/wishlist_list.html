@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>My Wishlist ❤️</h1>
+
+{% if wishlist %}
+
+<ul>
+    {% for item in wishlist %}
+        <li>
+            <strong>{{ item.room.title }}</strong><br>
+            📍 {{ item.room.location }}<br>
+            💰 ₹{{ item.room.rent }}/month<br>
+
+            <a href="{% url 'rooms:room_detail' item.room.id %}">
+                View Details
+            </a>
+        </li>
+        <hr>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>Your wishlist is empty.</p>
+
+{% endif %}
+
+{% endblock %}

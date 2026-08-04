@@ -52,7 +52,10 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
-    return HttpResponse("Welcome to Room Buddies Dashboard!")
+    context={
+        'user':request.user,
+    }
+    return render(request,"accounts/dashboard.html",context)
 
 def logout_view(request):
     logout(request)

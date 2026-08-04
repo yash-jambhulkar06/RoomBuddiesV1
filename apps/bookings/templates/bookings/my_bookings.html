@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bookings</title>
+</head>
+<body>
+
+<h1>My Bookings</h1>
+
+{% if bookings %}
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Room</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Booked On</th>
+    </tr>
+
+    {% for booking in bookings %}
+    <tr>
+        <td>{{ booking.room.title }}</td>
+        <td>{{ booking.room.owner.email }}</td>
+        <td>{{ booking.status }}</td>
+        <td>{{ booking.created_at }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+<p>You haven't booked any rooms yet.</p>
+
+{% endif %}
+
+</body>
+</html>

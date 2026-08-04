@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Room List</title>
+</head>
+<body>
+
+<div class="search-container">
+    <h1>Available Rooms</h1>
+<form method="GET" class="search-form">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search rooms..."
+        value="{{ request.GET.search }}"
+    >
+
+    <input 
+        type="text"
+        name="location"
+        placeholder="Location..."
+        value="{{ request.GET.location }}"
+    >
+
+    <input 
+        type="number"
+        name="max_rent"
+        placeholder="Max Rent"
+        value="{{ request.GET.max_rent }}"
+        min="0"
+    >
+
+    <input 
+        type="checkbox"
+        name="available"
+        {% if request.GET.available %}checked{% endif %}
+    >
+
+    <select name="sort">
+    <option value="">Sort By</option>
+
+    <option value="rent_low"
+        {% if request.GET.sort == "rent_low" %}selected{% endif %}>
+        Rent: Low to High
+    </option>
+
+    <option value="rent_high"
+        {% if request.GET.sort == "rent_high" %}selected{% endif %}>
+        Rent: High to Low
+    </option>
+
+    <option value="newest"
+        {% if request.GET.sort == "newest" %}selected{% endif %}>
+        Newest First
+    </option>
+    </select>
+    
+    <label>Only Available</label>
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+</div>
+<hr>
+<div class="room-grid">
+
+{% for room in rooms %}
+
+<div class="room-card">
+
+    <div class="room-content">
+        {% if room.image %}
+    <img
+        src="{{ room.image.url }}"
+        alt="{{ room.title }}"
+        class="room-image"
+    >
+{% else %}
+    <img
+        src="https://via.placeholder.com/400x250?text=No+Image"
+        alt="No Image"
+        class="room-image"
+    >
+{% endif %}
+
+        <h2 class="room-title">
+            {{ room.title }}
+        </h2>
+
+        <p class="room-info">
+            📍 {{ room.location }}
+        </p>
+
+        <p class="room-info">
+            💰 ₹{{ room.rent }}/month
+        </p>
+
+        <p class="room-info">
+            👤 {{ room.owner.email }}
+        </p>
+
+        <p class="room-info">
+            {% if room.is_available %}
+                ✅ Available
+            {% else %}
+                ❌ Not Available
+            {% endif %}
+        </p>
+
+        <a
+            href="{% url 'rooms:room_detail' room.id %}"
+            class="view-btn"
+        >
+            View Details
+        </a>
+
+    </div>
+
+</div>
+
+{% empty %}
+
+<p>No rooms found.</p>
+
+{% endfor %}
+
+</div>
+    </body>
+</html>
