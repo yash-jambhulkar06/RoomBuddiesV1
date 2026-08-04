@@ -20,6 +20,7 @@ def conversation_list(request):
             "user",
             "provider",
         )
+        .prefetch_related("messages")
         .order_by("-created_at")
     )
 

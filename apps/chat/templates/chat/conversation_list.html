@@ -4,11 +4,52 @@
 
 <div class="container mt-4">
 
-    <h2>Conversations</h2>
+    <h2 class="mb-4">Conversations</h2>
 
-    <p>
-        Your conversations will appear here.
-    </p>
+    {% if conversations %}
+
+        <div class="list-group">
+
+            {% for conversation in conversations %}
+
+                <a href="{% url 'chat:chat_room' conversation.id %}"
+                   class="list-group-item list-group-item-action">
+
+                    <h5 class="mb-1">
+                        {% if request.user == conversation.user %}
+                            {{ conversation.provider.first_name }}
+                        {% else %}
+                            {{ conversation.user.first_name }}
+                        {% endif %}
+                    </h5>
+
+                    <p class="mb-1">
+                        {% with last_message=conversation.messages.last %}
+                        {% if last_message %}
+                        {{ last_message.message|truncatechars:40 }}
+                        {% else %}
+                        No messages yet
+                        {% endif %}
+                        {% endwith %}
+                    </p>
+
+                    <small class="text-muted">
+                        Started on {{ conversation.created_at|date:"d M Y H:i" }}
+                    </small>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            You don't have any conversations yet.
+        </div>
+
+    {% endif %}
 
 </div>
 
