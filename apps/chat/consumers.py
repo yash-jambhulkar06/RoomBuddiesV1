@@ -43,6 +43,7 @@ class ChatConsumer(WebsocketConsumer):
                 "message":message.message,
                 "sender":user.first_name,
                 "sender_id":user.id,
+                "time":message.created_at.strftime("%d %b %H: %M"),
             }
         )
         
@@ -54,5 +55,6 @@ class ChatConsumer(WebsocketConsumer):
                 "message":event["message"],
                 "sender":event["sender"],
                 "sender_id":event["sender_id"],
+                "time":event["time"],
             })
         )
