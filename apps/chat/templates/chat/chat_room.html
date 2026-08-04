@@ -76,7 +76,8 @@
     const isMine=Number(currentUserId)=== data.sender_id;
 
     const messageDiv=document.createElement("div");
-    messageDiv.className="mb-3";
+    messageDiv.className=isMine
+    ?"message sent":"message recieved";
 
     messageDiv.innerHTML=`<strong>${isMine ? "You":data.sender}</strong><br>${data.message}
     <div class="message-time">${date.time}</div>`;
