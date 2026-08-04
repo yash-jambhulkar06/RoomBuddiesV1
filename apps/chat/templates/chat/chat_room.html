@@ -73,5 +73,28 @@
     if(chatBox){
         chatBox.scrollTop=chatBox.scrollHeight;
     }
+
+const conversationId = "{{ conversation.id }}";
+
+const socket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat/" + conversationId + "/"
+);
+
+socket.onopen = function () {
+    console.log("✅ WebSocket Connected");
+};
+
+socket.onclose = function () {
+    console.log("❌ WebSocket Disconnected");
+};
+
+socket.onerror = function (error) {
+    console.log("WebSocket Error:", error);
+};
+
+socket.onmessage = function (event) {
+    console.log("Message:", event.data);
+};
+
 </script>
 {% endblock %}
