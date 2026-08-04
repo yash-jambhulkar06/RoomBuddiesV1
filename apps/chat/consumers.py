@@ -26,6 +26,14 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def receive(self, text_data):
+        data=json.loads(text_data)
+        if data["time"] =="typing":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,{
+                    "type":"typing_status",
+                    "sender_id":self.scope["user"].id,
+                }
+            )
         user=self.scope["user"]
         conversation=Conversation.objects.get(
             id=self.conversation_id
