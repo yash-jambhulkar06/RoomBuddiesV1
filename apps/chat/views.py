@@ -63,6 +63,17 @@ def chat_room(request, conversation_id):
     messages=conversation.messages.select_related(
         "sender"
     ).all()
+    
+    print("Logged in user:", request.user.email)
+    print("Conversation user:", conversation.user.email)
+    print("Conversation provider:", conversation.provider.email)
+
+    if request.user == conversation.user:
+        other_user = conversation.provider
+    else:
+        other_user = conversation.user
+
+    print("Other user:", other_user.email)
 
     return render(
         request,
@@ -71,6 +82,7 @@ def chat_room(request, conversation_id):
             "conversation": conversation,
             "messages": messages,
             "form": form,
+            "other_user":other_user,
         },
     )
 

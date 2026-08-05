@@ -10,7 +10,10 @@
         </div>
 
         <div class="ms-3">
-            <h5 class="mb-0">{{ conversation.room.owner.first_name }}</h5>
+          <h5 class="mb-0">
+First Name: {{ other_user.first_name }}
+Last Name: {{ other_user.last_name }} 
+</h5>
            <small id="user-status"
     class="{% if conversation.room.owner.is_online %}text-success{% else %}text-secondary{% endif %}">
     {% if conversation.room.owner.is_online %}
@@ -34,7 +37,13 @@
 
       {{ message.message }}
 
-      <div class="message-time">{{ message.created_at|date:"d M H:i" }}</div>
+      <div class="message-time">{{ message.created_at|date:"d M H:i" }}
+        {% if message.is_read %}
+        ✓✓
+        {% else %}
+        ✓
+        {% endif %}
+      </div>
     </div>
 
     {% else %}
@@ -97,42 +106,67 @@
     console.log("WebSocket Error:", error);
   };
 
-  socket.onmessage=function(event){
+  socket.onmessage = function(event) {
 
-    const data=JSON.parse(event.data);
-    if(data.type === "typing"){
-        if(Number(currentUserId) !== data.sender_id){
-            const typing=document.getElementById("typing-indicator");
+    const data = JSON.parse(event.data);
 
-            typing.style.display="block";
-            clearTimeout(window.typingTimer);
+    // Online/Offline Status
+    if (data.type === "status") {
 
-            window.typingTimer = setTimeout(()=>
-        {
-            typing.style.display = "none";
-        },1500);
+        const status = document.getElementById("user-status");
+
+        if (Number(currentUserId) !== data.sender_id) {
+
+            if (data.is_online) {
+                status.className = "text-success";
+                status.innerHTML = "● Online";
+            } else {
+                status.className = "text-secondary";
+                status.innerHTML = "● Offline";
+            }
         }
+
         return;
     }
 
+    // Typing
+    if (data.type === "typing") {
 
-    const isMine=Number(currentUserId)=== data.sender_id;
+        if (Number(currentUserId) !== data.sender_id) {
 
-    const messageDiv=document.createElement("div");
-    messageDiv.className=isMine
-    ?"message sent"
-    :"message received";
+            const typing = document.getElementById("typing-indicator");
 
-    messageDiv.innerHTML=`<strong>${isMine ? "You":data.sender}</strong><br>${data.message}
-    <div class="message-time">${data.time}</div>`;
+            typing.style.display = "block";
+
+            clearTimeout(window.typingTimer);
+
+            window.typingTimer = setTimeout(function () {
+                typing.style.display = "none";
+            }, 1500);
+        }
+
+        return;
+    }
+
+    // Chat Message
+    const isMine = Number(currentUserId) === data.sender_id;
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = isMine ? "message sent" : "message received";
+
+    messageDiv.innerHTML = `
+        <strong>${isMine ? "You" : data.sender}</strong><br>
+        ${data.message}
+        <div class="message-time">${data.time}</div>
+    `;
 
     chatBox.appendChild(messageDiv);
-    chatBox.scrollTop=chatBox.scrollHeight;
-  };
+    chatBox.scrollTop = chatBox.scrollHeight;
+};
 
 
 
-  const chatForm = document.getElementById("chat-form");
+const chatForm = document.getElementById("chat-form");
 const messageInput = document.querySelector("input[name='message'],textarea[name='message']");
 
 messageInput.focus();
