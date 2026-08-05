@@ -1,4 +1,4 @@
-from django.db.models import Count, Prefetch, Q
+from django.db.models import Count, Prefetch, Q, Max
 
 from .models import Conversation, Message
 
@@ -24,7 +24,8 @@ def get_user_conversations(user):
                 "messages",
                 filter=Q(messages__is_read=False)
                 & ~Q(messages__sender=user),
-            )
+            ),
+            last_message_time=Max("messages__created_at"),
         )
-        .order_by("-created_at")
+        .order_by("-last_message_time", "-created_at")
     )

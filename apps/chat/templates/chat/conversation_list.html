@@ -26,7 +26,7 @@
     </span>
 
     {% if conversation.unread_count > 0 %}
-        <span class="badge bg-danger rounded-pill">
+        <span class="badge bg-success rounded-pill">
             {{ conversation.unread_count }}
         </span>
     {% endif %}
@@ -34,13 +34,27 @@
 </h5>
 
                     <p class="mb-1">
+                        <small class="text-primary">
+                            {{ conversation.room.title }}
+                        </small>
+                        <br>
                         {% with last_message=conversation.messages.last %}
-                        {% if last_message %}
-                        {{ last_message.message|truncatechars:40 }}
-                        {% else %}
-                        No messages yet
-                        {% endif %}
-                        {% endwith %}
+
+{% if last_message %}
+
+    {% if last_message.sender == request.user %}
+        <strong>You:</strong>
+    {% endif %}
+
+    {{ last_message.message|truncatechars:40 }}
+
+{% else %}
+
+    No messages yet
+
+{% endif %}
+
+{% endwith %}
                     </p>
 
                     <small class="text-muted">
@@ -72,5 +86,22 @@
     {% endif %}
 
 </div>
+<script>
+const conversationSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/conversations/"
+);
 
+conversationSocket.onopen = function () {
+    console.log("✅ Conversation socket connected");
+};
+
+conversationSocket.onclose = function () {
+    console.log("❌ Conversation socket disconnected");
+};
+
+conversationSocket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    console.log("Conversation Update:", data);
+};
+</script>
 {% endblock %}
