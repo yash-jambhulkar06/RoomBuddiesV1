@@ -20,11 +20,26 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
         self.scope["user"].is_online = True
         self.scope["user"].save(update_fields=["is_online"])
-        print("user online")
+        
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,{
+                "type":"user_status",
+                "sender_id":self.scope["user"].id,
+                "is_online":True,
+            },
+        )
 
     def disconnect(self, close_code):
         self.scope["user"].is_online=False
         self.scope["user"].save(update_fields=["is_online"])
+        
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,{
+                "type":"user_status",
+                "sender_id":self.scope["user"].id,
+                "is_online":False,
+            },
+        )
         
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
@@ -80,5 +95,15 @@ class ChatConsumer(WebsocketConsumer):
             text_data=json.dumps({
                 "type":"typing",
                 "sender_id":event["sender_id"],
+            })
+        )
+        
+        
+    def user_status(self,event):
+        self.send(
+            text_data=json.dumps({
+                "type":"status",
+                "sender_id":event["sender_id"],
+                "is_online":event["is_online"],
             })
         )
