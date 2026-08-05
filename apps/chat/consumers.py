@@ -28,6 +28,27 @@ class ChatConsumer(WebsocketConsumer):
                 "is_online":True,
             },
         )
+        
+        conversation = Conversation.objects.get(
+            id=self.conversation_id
+        )
+        
+        Message.objects.filter(
+            conversation = conversation,
+            is_read = False,
+        ).exclude(
+            sender=self.scope["user"],
+        ).update(
+            is_read = True,
+        )
+        
+        
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,{
+                "type":"messages_read",
+                "reader_id":self.scope["user"].id,
+            },
+        )
 
     def disconnect(self, close_code):
         self.scope["user"].is_online=False
@@ -70,6 +91,7 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,{
                 "type":"chat_message",
+                "id":message.id,
                 "message":message.message,
                 "sender":user.first_name,
                 "sender_id":user.id,
@@ -83,6 +105,7 @@ class ChatConsumer(WebsocketConsumer):
         self.send(
             text_data=json.dumps({
                 "type":"message",
+                "id":event["id"],
                 "message":event["message"],
                 "sender":event["sender"],
                 "sender_id":event["sender_id"],
@@ -99,6 +122,14 @@ class ChatConsumer(WebsocketConsumer):
         )
         
         
+    def messages_read(self,event):
+        self.send(
+            text_data=json.dumps({
+                "type":"messages_read",
+                "reader_id":event["reader_id"],
+            })
+        )
+        
     def user_status(self,event):
         self.send(
             text_data=json.dumps({
@@ -107,3 +138,6 @@ class ChatConsumer(WebsocketConsumer):
                 "is_online":event["is_online"],
             })
         )
+        
+        
+    

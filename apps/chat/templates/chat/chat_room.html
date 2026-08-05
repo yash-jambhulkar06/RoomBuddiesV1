@@ -30,14 +30,14 @@ Last Name: {{ other_user.last_name }}
   <div class="card-body chat-box">
     {% for message in messages %} {% if message.sender == request.user %}
 
-    <div class="message sent">
+    <div class="message sent" id="message-{{ message.id }}">
       <strong>You</strong>
 
       <br />
 
       {{ message.message }}
 
-      <div class="message-time">{{ message.created_at|date:"d M H:i" }}
+      <div class="message-time" id="status-{{ message.id }}">{{ message.created_at|date:"d M H:i" }}
         {% if message.is_read %}
         ✓✓
         {% else %}
@@ -109,6 +109,21 @@ Last Name: {{ other_user.last_name }}
   socket.onmessage = function(event) {
 
     const data = JSON.parse(event.data);
+    console.log("WebSocket Event:",data.type,data);
+
+
+    if(data.type === "messages_read"){
+    
+      if(Number(currentUserId) !== data.reader_id ){
+
+        document.querySelectorAll(".message.sent.message-time").forEach(function(status){
+          if(status.innerHTML.includes("✓") && !status.innerHTML.includes("✓✓")){
+            status.innerHTML= status.innerHTML.replace("✓","✓✓");
+          }
+        });
+      }
+      return;
+    }
 
     // Online/Offline Status
     if (data.type === "status") {
@@ -152,12 +167,13 @@ Last Name: {{ other_user.last_name }}
     const isMine = Number(currentUserId) === data.sender_id;
 
     const messageDiv = document.createElement("div");
+    messageDiv.id="message-"+ data.id;
     messageDiv.className = isMine ? "message sent" : "message received";
 
     messageDiv.innerHTML = `
         <strong>${isMine ? "You" : data.sender}</strong><br>
         ${data.message}
-        <div class="message-time">${data.time}</div>
+        <div class="message-time" id="status-${data.id}">${data.time}${isMine ? "✓":""}</div>
     `;
 
     chatBox.appendChild(messageDiv);
