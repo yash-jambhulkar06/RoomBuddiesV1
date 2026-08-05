@@ -99,6 +99,31 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
         
+        
+        conversation_data=json.dumps({
+            "conversation_id":conversation.id,
+            "message":message.message,
+            "sender":user.first_name,
+            "sender_id":user.id,
+            "time":message.created_at.strftime("%d %b %H:%M"),
+        })
+        
+        async_to_sync(self.channel_layer.group_send)(
+            f"user_{conversation.user.id}",
+            {
+                "type":"conversation_update",
+                "text":conversation_data,
+            },
+        )
+        
+        async_to_sync(self.channel_layer.group_send)(
+            f"user_{ conversation.provider.id }",
+            {
+                "type":"conversation_update",
+                "text":conversation_data,
+            },
+        )
+        
     def chat_message(self,event):
         message=event["message"],
         
