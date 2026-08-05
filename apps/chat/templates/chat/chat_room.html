@@ -11,11 +11,14 @@
 
         <div class="ms-3">
             <h5 class="mb-0">{{ conversation.room.owner.first_name }}</h5>
-           {% if conversation.room.owner.is_online %}
-           <small class="text-success">Online</small>
-           {% else %}
-           <small class="text-secondary">Offline</small>
-           {% endif %}
+           <small id="user-status"
+    class="{% if conversation.room.owner.is_online %}text-success{% else %}text-secondary{% endif %}">
+    {% if conversation.room.owner.is_online %}
+        ● Online
+    {% else %}
+        ● Offline
+    {% endif %}
+</small>
         </div>
 
     </div>
