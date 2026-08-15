@@ -1,39 +1,87 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Owner Booking Request</title>
-    </head>
-    <body>
-        <h1>Booking Request</h1>
-        {% if bookings %}
-        <table border="1" cellpading="8">
-            <tr>
-                <th>User</th>
-                <th>Room</th>
-                <th>Status</th>
-                <th>Requested On</th>
-            </tr>
-            {% for booking in bookings %}
-            <tr>
-                <td>{{ booking.user.email }}</td>
-                <td>{{ booking.room.title }}</td>
-                <td>{{ booking.status }}</td>
-                <td>{{ booking.created_at }}</td>
-                <td>
-                    {% if booking.status == "PENDING" %}
-                    <a href="{% url 'bookings:accept_booking' booking.id %}">Accept</a>|
-                    <a href="{% url 'bookings:reject_booking' booking.id %}">Reject</a>
-                    {% else %}
-                    No Action 
-                    {% endif %}
-                </td>
-            
-            </tr>
+{% extends "base.html" %}
 
-            {% endfor %}
-        </table>
-        {% else %}
-        <p>No booking request yet</p>
-        {% endif %}
-    </body>
-</html>
+{% block title %}
+    Room Booking Requests | Room Buddies
+{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                <span>📩</span> Room Booking Requests
+            </h1>
+            <p class="text-muted mb-0 small">Manage incoming booking requests from potential tenants for your rooms.</p>
+        </div>
+        <a href="{% url 'dashboard:provider_dashboard' %}" class="btn btn-outline-secondary btn-sm px-3">
+            📊 Provider Dashboard
+        </a>
+    </div>
+
+    {% if bookings %}
+    <div class="card-modern border-0 shadow-sm overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>Room Title</th>
+                        <th>Status</th>
+                        <th>Requested On</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td class="fw-semibold text-dark">
+                            {{ booking.user.email }}
+                        </td>
+                        <td class="fw-bold text-dark">
+                            <a href="{% url 'rooms:room_detail' booking.room.id %}" class="text-dark hover-primary">
+                                {{ booking.room.title }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if booking.status == "PENDING" %}
+                                <span class="badge badge-warning-soft">⏳ Pending Action</span>
+                            {% elif booking.status == "ACCEPTED" %}
+                                <span class="badge badge-success-soft">✅ Accepted</span>
+                            {% elif booking.status == "REJECTED" %}
+                                <span class="badge badge-danger-soft">❌ Rejected</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle">{{ booking.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted small">
+                            {{ booking.created_at|date:"d M Y, H:i" }}
+                        </td>
+                        <td class="text-end">
+                            {% if booking.status == "PENDING" %}
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a href="{% url 'bookings:accept_booking' booking.id %}" class="btn btn-success btn-sm px-3 shadow-sm">
+                                        Accept
+                                    </a>
+                                    <a href="{% url 'bookings:reject_booking' booking.id %}" class="btn btn-outline-danger btn-sm px-3">
+                                        Reject
+                                    </a>
+                                </div>
+                            {% else %}
+                                <span class="text-muted small fst-italic">No action required</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📫</div>
+        <div class="empty-title">No Booking Requests Yet</div>
+        <div class="empty-subtitle">When users request to book your rooms, their applications will show up right here.</div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

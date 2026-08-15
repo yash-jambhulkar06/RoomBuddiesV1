@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Write a Service Review | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/user_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="service-review-page">
+
+    <div class="service-review-container">
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
+
+        <div class="service-review-header">
+
+            <div class="service-review-icon">
+                ⭐
+            </div>
+
+            <span class="service-review-label">
+                ROOM BUDDIES
+            </span>
+
+            <h1>
+                Write a Review
+            </h1>
+
+            <p>
+                Share your experience and help other customers
+                choose the right service.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             REVIEW CARD
+             ===================================================== -->
+
+        <div class="service-review-card">
+
+            <!-- Service Information -->
+
+            <div class="service-review-service">
+
+                <div class="service-review-service-icon">
+                    🛠️
+                </div>
+
+                <div>
+
+                    <small>
+                        SERVICE
+                    </small>
+
+                    <h3>
+                        {{ service_booking.service.title }}
+                    </h3>
+
+                    <p>
+                        Provider:
+                        <strong>
+                            {{ service_booking.service.provider.first_name }}
+                            {{ service_booking.service.provider.last_name }}
+                        </strong>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="service-review-divider"></div>
+
+
+            <!-- =================================================
+                 REVIEW FORM
+                 ================================================= -->
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- Non-field errors -->
+
+                {% if form.non_field_errors %}
+
+                    <div class="service-review-error">
+
+                        {{ form.non_field_errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Rating -->
+
+                <div class="service-review-field">
+
+                    <label
+                        for="{{ form.rating.id_for_label }}"
+                    >
+                        Rating
+                    </label>
+
+                    <div class="service-review-rating">
+                        {{ form.rating }}
+                    </div>
+
+                    {% if form.rating.errors %}
+
+                        <div class="service-review-field-error">
+                            {{ form.rating.errors }}
+                        </div>
+
+                    {% endif %}
+
+                    <small class="service-review-help">
+                        Choose a rating from 1 to 5.
+                    </small>
+
+                </div>
+
+
+                <!-- Comment -->
+
+                <div class="service-review-field">
+
+                    <label
+                        for="{{ form.comment.id_for_label }}"
+                    >
+                        Your Review
+                    </label>
+
+                    <div class="service-review-comment">
+                        {{ form.comment }}
+                    </div>
+
+                    {% if form.comment.errors %}
+
+                        <div class="service-review-field-error">
+                            {{ form.comment.errors }}
+                        </div>
+
+                    {% endif %}
+
+                    <small class="service-review-help">
+                        Tell us about your experience with this service.
+                    </small>
+
+                </div>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    class="service-review-submit"
+                >
+                    ⭐ Submit Review
+                </button>
+
+
+                <!-- Cancel -->
+
+                <a
+                    href="{% url 'user_services:my_service_bookings' %}"
+                    class="service-review-cancel"
+                >
+                    ← Cancel
+                </a>
+
+            </form>
+
+
+            <!-- Security / Note -->
+
+            <div class="service-review-note">
+
+                <span>
+                    💬
+                </span>
+
+                <p>
+                    Your review helps improve Room Buddies
+                    and helps future customers make better decisions.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

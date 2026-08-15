@@ -1,23 +1,41 @@
 {% extends "base.html" %}
 
-{% block content %}
-
-<h2>Review for {{ room.title }}</h2>
-
-<form method="POST">
-    {% csrf_token %}
-
-    {{ form.as_p }}
-
-    <button type="submit">
-        Submit Review
-    </button>
-</form>
-
-<p>
-    <a href="{% url 'rooms:room_details' room.id %}">
-        Back to Room
-    </a>
-</p>
-
+{% block title %}
+    Write a Room Review | Room Buddies
 {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card-modern p-4 p-md-5 border-0 shadow-lg bg-white">
+                <div class="text-center mb-4">
+                    <div class="fs-1 mb-2">⭐</div>
+                    <h2 class="fw-bold text-dark mb-1">Write a Review</h2>
+                    <p class="text-muted small">Share your experience about staying at this room</p>
+                </div>
+
+                <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                    <h5 class="fw-bold text-dark mb-1">🏠 {{ booking.room.title }}</h5>
+                    <p class="text-muted small mb-0">📍 {{ booking.room.location }}</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+                        <a href="{% url 'bookings:my_bookings' %}" class="btn btn-light border px-4">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success px-4 shadow-sm">
+                            Submit Review
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

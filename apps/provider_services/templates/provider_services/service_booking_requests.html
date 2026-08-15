@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+    Service Booking Requests | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/provider_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="provider-bookings-page">
+
+    <!-- Page Header -->
+
+    <div class="provider-page-header">
+
+        <span class="provider-page-badge">
+            Provider Panel
+        </span>
+
+        <h1>
+            Service Booking Requests
+        </h1>
+
+        <p>
+            Manage requests from users for your services.
+        </p>
+
+    </div>
+
+
+    {% if bookings %}
+
+        <div class="provider-bookings-grid">
+
+            {% for booking in bookings %}
+
+                <div class="service-request-card">
+
+                    <!-- Card Header -->
+
+                    <div class="service-request-header">
+
+                        <div>
+
+                            <h4>
+                                {{ booking.service.title }}
+                            </h4>
+
+                            <span class="request-id">
+                                Request #{{ booking.id }}
+                            </span>
+
+                        </div>
+
+
+                        {% if booking.status == "PENDING" %}
+
+                            <span class="status-badge status-pending">
+                                ⏳ Pending
+                            </span>
+
+                        {% elif booking.status == "ACCEPTED" %}
+
+                            <span class="status-badge status-accepted">
+                                ✓ Accepted
+                            </span>
+
+                        {% elif booking.status == "REJECTED" %}
+
+                            <span class="status-badge status-rejected">
+                                ✕ Rejected
+                            </span>
+
+                        {% elif booking.status == "COMPLETED" %}
+
+                            <span class="status-badge status-completed">
+                                ✓ Completed
+                            </span>
+
+                        {% elif booking.status == "CANCELLED" %}
+
+                            <span class="status-badge status-cancelled">
+                                Cancelled
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="request-divider"></div>
+
+
+                    <!-- Customer -->
+
+                    <div class="customer-section">
+
+                        <span class="section-label">
+                            Customer
+                        </span>
+
+                        <div class="customer-name">
+                            {{ booking.user.first_name }}
+                            {{ booking.user.last_name }}
+                        </div>
+
+                        <span class="customer-email">
+                            {{ booking.user.email }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Booking Information -->
+
+                    <div class="booking-info-grid">
+
+                        <div class="info-box">
+
+                            <span class="info-label">
+                                Booking Type
+                            </span>
+
+                            <strong>
+                                {{ booking.get_booking_type_display }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <span class="info-label">
+                                Booking Date
+                            </span>
+
+                            <strong>
+
+                                {% if booking.booking_date %}
+
+                                    📅 {{ booking.booking_date }}
+
+                                {% else %}
+
+                                    🔄 Ongoing
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Price -->
+
+                    <div class="service-price">
+
+                        <span>
+                            Service Price
+                        </span>
+
+                        <strong>
+                            ₹{{ booking.service.price }}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- Pending -->
+
+                    {% if booking.status == "PENDING" %}
+
+                        <div class="request-actions">
+
+                            <form
+                                method="POST"
+                                action="{% url 'provider_services:update_service_booking_status' booking.id 'ACCEPTED' %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="provider-btn provider-btn-accept"
+                                >
+                                    ✓ Accept
+                                </button>
+
+                            </form>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'provider_services:update_service_booking_status' booking.id 'REJECTED' %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="provider-btn provider-btn-reject"
+                                >
+                                    ✕ Reject
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Accepted -->
+
+                    {% if booking.status == "ACCEPTED" %}
+
+                        <div class="accepted-section">
+
+                            {% if booking.payment and booking.payment.status == "SUCCESS" %}
+
+                                <div class="payment-success-box">
+
+                                    <div class="payment-success-title">
+                                        ✓ Payment Completed
+                                    </div>
+
+                                    <p>
+                                        Customer has successfully paid
+                                        for this service.
+                                    </p>
+
+                                </div>
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'provider_services:complete_service_booking' booking.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="provider-btn provider-btn-complete"
+                                        onclick="return confirm('Mark this service booking as completed?');"
+                                    >
+                                        ✓ Mark Service as Completed
+                                    </button>
+
+                                </form>
+
+
+                            {% else %}
+
+                                <div class="payment-pending-box">
+
+                                    <div class="payment-pending-title">
+                                        ⏳ Payment Pending
+                                    </div>
+
+                                    <p>
+                                        The customer must complete payment
+                                        before the service can be completed.
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Completed -->
+
+                    {% if booking.status == "COMPLETED" %}
+
+                        <div class="booking-final-state completed-state">
+
+                            <strong>
+                                ✓ Service Completed
+                            </strong>
+
+                            <span>
+                                This booking has been completed successfully.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Rejected -->
+
+                    {% if booking.status == "REJECTED" %}
+
+                        <div class="booking-final-state rejected-state">
+
+                            <strong>
+                                ✕ Booking Rejected
+                            </strong>
+
+                            <span>
+                                This booking was rejected.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Cancelled -->
+
+                    {% if booking.status == "CANCELLED" %}
+
+                        <div class="booking-final-state cancelled-state">
+
+                            <strong>
+                                Booking Cancelled
+                            </strong>
+
+                            <span>
+                                This booking was cancelled.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="empty-bookings-state">
+
+            <div class="empty-icon">
+                📭
+            </div>
+
+            <h3>
+                No Booking Requests
+            </h3>
+
+            <p>
+                You don't have any service booking requests yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

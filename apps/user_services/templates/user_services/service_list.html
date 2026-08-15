@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Services | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/user_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="services-page">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="services-header">
+
+        <div class="services-header-icon">
+            🛠️
+        </div>
+
+        <span class="services-label">
+            ROOM BUDDIES SERVICES
+        </span>
+
+        <h1>
+            Essential Services
+        </h1>
+
+        <p>
+            Find trusted services for your everyday needs.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         SERVICES
+         ===================================================== -->
+
+    {% if services %}
+
+        <div class="services-grid">
+
+            {% for service in services %}
+
+                <div class="service-card">
+
+                    <!-- Service Header -->
+
+                    <div class="service-card-header">
+
+                        <div>
+
+                            {% if service.service_type == "TIFFIN" %}
+
+                                <span class="service-type service-tiffin">
+                                    🍱 Tiffin
+                                </span>
+
+                            {% elif service.service_type == "LAUNDRY" %}
+
+                                <span class="service-type service-laundry">
+                                    🧺 Laundry
+                                </span>
+
+                            {% elif service.service_type == "WATER_CAN" %}
+
+                                <span class="service-type service-water">
+                                    💧 Water Can
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <span class="service-available">
+                            <span class="availability-dot"></span>
+                            Available
+                        </span>
+
+                    </div>
+
+
+                    <!-- Service Title -->
+
+                    <h3 class="service-card-title">
+                        {{ service.title }}
+                    </h3>
+
+
+                    <!-- Description -->
+
+                    <p class="service-card-description">
+                        {{ service.description|truncatewords:20 }}
+                    </p>
+
+
+                    <!-- Provider -->
+
+                    <div class="service-provider">
+
+                        <div class="provider-avatar">
+                            {{ service.provider.first_name|first|upper }}
+                        </div>
+
+                        <div>
+
+                            <small>
+                                PROVIDED BY
+                            </small>
+
+                            <div class="provider-name">
+
+                                {{ service.provider.first_name }}
+                                {{ service.provider.last_name }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Footer -->
+
+                    <div class="service-card-footer">
+
+                        <div class="service-price">
+
+                            <small>
+                                PRICE
+                            </small>
+
+                            <strong>
+                                ₹{{ service.price }}
+                            </strong>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'user_services:service_details' service.id %}"
+                            class="service-view-btn"
+                        >
+                            View Service
+                            <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <!-- =================================================
+             EMPTY STATE
+             ================================================= -->
+
+        <div class="services-empty">
+
+            <div class="services-empty-icon">
+                🛠️
+            </div>
+
+            <h3>
+                No Services Available
+            </h3>
+
+            <p>
+                Providers haven't added any services yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

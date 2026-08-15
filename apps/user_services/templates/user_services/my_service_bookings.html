@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    My Service Bookings | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/user_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="user-service-bookings-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
+
+    <div class="user-service-page-header">
+
+        <span class="user-service-page-badge">
+            Room Buddies
+        </span>
+
+        <h1>
+            My Service Bookings
+        </h1>
+
+        <p>
+            Track and manage all your service booking requests.
+        </p>
+
+    </div>
+
+
+    {% if bookings %}
+
+        <div class="user-service-bookings-grid">
+
+            {% for booking in bookings %}
+
+                <div class="user-service-booking-card">
+
+                    <!-- =================================================
+                         CARD HEADER
+                         ================================================= -->
+
+                    <div class="user-service-card-header">
+
+                        <div>
+
+                            <!-- Service Type -->
+
+                            {% if booking.service.service_type == "TIFFIN" %}
+
+                                <span class="user-service-type tiffin-type">
+                                    🍱 Tiffin
+                                </span>
+
+                            {% elif booking.service.service_type == "LAUNDRY" %}
+
+                                <span class="user-service-type laundry-type">
+                                    🧺 Laundry
+                                </span>
+
+                            {% elif booking.service.service_type == "WATER_CAN" %}
+
+                                <span class="user-service-type water-type">
+                                    💧 Water Can
+                                </span>
+
+                            {% endif %}
+
+
+                            <h3>
+                                {{ booking.service.title }}
+                            </h3>
+
+                        </div>
+
+
+                        <!-- Status -->
+
+                        {% if booking.status == "PENDING" %}
+
+                            <span class="user-service-status status-pending">
+                                ⏳ Pending
+                            </span>
+
+                        {% elif booking.status == "ACCEPTED" %}
+
+                            <span class="user-service-status status-accepted">
+                                ✓ Accepted
+                            </span>
+
+                        {% elif booking.status == "REJECTED" %}
+
+                            <span class="user-service-status status-rejected">
+                                ✕ Rejected
+                            </span>
+
+                        {% elif booking.status == "COMPLETED" %}
+
+                            <span class="user-service-status status-completed">
+                                ✓ Completed
+                            </span>
+
+                        {% elif booking.status == "CANCELLED" %}
+
+                            <span class="user-service-status status-cancelled">
+                                Cancelled
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <p class="user-service-description">
+                        {{ booking.service.description|truncatewords:15 }}
+                    </p>
+
+
+                    <div class="user-service-divider"></div>
+
+
+                    <!-- =================================================
+                         BOOKING DETAILS
+                         ================================================= -->
+
+                    <div class="user-service-details">
+
+                        <!-- Booking Type -->
+
+                        <div class="user-service-detail">
+
+                            <span>
+                                Booking Type
+                            </span>
+
+                            <strong>
+                                {{ booking.get_booking_type_display }}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Booking Date -->
+
+                        <div class="user-service-detail">
+
+                            <span>
+                                Booking Date
+                            </span>
+
+                            <strong>
+
+                                {% if booking.booking_date %}
+
+                                    📅 {{ booking.booking_date }}
+
+                                {% else %}
+
+                                    🔄 Ongoing Service
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Provider -->
+
+                        <div class="user-service-detail">
+
+                            <span>
+                                Provider
+                            </span>
+
+                            <strong>
+                                {{ booking.service.provider.first_name }}
+                                {{ booking.service.provider.last_name }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PRICE
+                         ================================================= -->
+
+                    <div class="user-service-price">
+
+                        <span>
+                            Service Price
+                        </span>
+
+                        <strong>
+                            ₹{{ booking.service.price }}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PENDING / ACCEPTED ACTIONS
+                         ================================================= -->
+
+                    {% if booking.status == "PENDING" or booking.status == "ACCEPTED" %}
+
+                        <div class="user-service-actions">
+
+                            <!-- Cancel -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'user_services:cancel_service_booking' booking.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="user-service-btn user-service-btn-cancel"
+                                    onclick="return confirm('Are you sure you want to cancel this booking?');"
+                                >
+                                    ✕ Cancel Booking
+                                </button>
+
+                            </form>
+
+
+                            <!-- Payment -->
+
+                            {% if booking.status == "ACCEPTED" %}
+
+                                {% if not booking.payment or booking.payment.status != "SUCCESS" %}
+
+                                    <a
+                                        href="{% url 'user_services:service_payment' booking.id %}"
+                                        class="user-service-btn user-service-btn-pay"
+                                    >
+                                        💳 Pay Now — ₹{{ booking.service.price }}
+                                    </a>
+
+                                {% else %}
+
+                                    <div class="user-service-payment-success">
+                                        ✓ Payment Completed
+                                    </div>
+
+                                {% endif %}
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         COMPLETED / REVIEW
+                         ================================================= -->
+
+                    {% if booking.status == "COMPLETED" %}
+
+                        {% if not booking.review %}
+
+                            <a
+                                href="{% url 'reviews:add_service_review' booking.id %}"
+                                class="user-service-review-btn"
+                            >
+                                ⭐ Write a Review
+                            </a>
+
+                        {% else %}
+
+                            <div class="user-service-review-success">
+                                ✓ Review Submitted
+                            </div>
+
+                        {% endif %}
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         REJECTED
+                         ================================================= -->
+
+                    {% if booking.status == "REJECTED" %}
+
+                        <div class="user-service-final-state rejected-state">
+
+                            <strong>
+                                ✕ Booking Rejected
+                            </strong>
+
+                            <span>
+                                This service booking was rejected by the provider.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         CANCELLED
+                         ================================================= -->
+
+                    {% if booking.status == "CANCELLED" %}
+
+                        <div class="user-service-final-state cancelled-state">
+
+                            <strong>
+                                Booking Cancelled
+                            </strong>
+
+                            <span>
+                                This service booking was cancelled.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <!-- =====================================================
+             EMPTY STATE
+             ===================================================== -->
+
+        <div class="user-service-empty-state">
+
+            <div class="user-service-empty-icon">
+                📋
+            </div>
+
+            <h3>
+                No Service Bookings
+            </h3>
+
+            <p>
+                You haven't booked any services yet.
+            </p>
+
+            <a
+                href="{% url 'user_services:service_list' %}"
+                class="user-service-browse-btn"
+            >
+                🛠️ Browse Services
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -106,7 +106,17 @@ class ChatConsumer(WebsocketConsumer):
             "sender":user.first_name,
             "sender_id":user.id,
             "time":message.created_at.strftime("%d %b %H:%M"),
+            
+            "receiver_id":(
+                conversation.provider.id
+                if user == conversation.user
+                else conversation.user.id
+            ),
         })
+        
+        print("Sending coversation update")
+        print(f"user_{conversation.user.id}")
+        print(f"user_{conversation.provider.id}")
         
         async_to_sync(self.channel_layer.group_send)(
             f"user_{conversation.user.id}",

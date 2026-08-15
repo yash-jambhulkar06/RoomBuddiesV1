@@ -11,8 +11,8 @@
 
         <div class="ms-3">
           <h5 class="mb-0">
-First Name: {{ other_user.first_name }}
-Last Name: {{ other_user.last_name }} 
+{{ other_user.first_name }}
+{{ other_user.last_name }} 
 </h5>
            <small id="user-status"
     class="{% if conversation.room.owner.is_online %}text-success{% else %}text-secondary{% endif %}">

@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden
 from apps.wishlist.models import Wishlist
 from django.db.models import Avg
 from apps.reviews.models import Review
+from django.db.models import Q
 
 @login_required
 def create_room(request):
@@ -30,17 +31,26 @@ def room_list(request):
     rooms=Room.objects.all()
     search=request.GET.get("search")
     location=request.GET.get("location")
+    min_rent=request.GET.get("min_rent")
     max_rent=request.GET.get("max_rent")
     available=request.GET.get("available")
+    room_type=request.GET.get("room_type")
+    gender = request.GET.get("gender")
     
     if search:
         rooms=rooms.filter(
-            title___icontains=search
+            Q(title__icontains=search)|
+            Q(location__icontains=search)
         )
         
     if location:
         rooms=rooms.filter(
             location__icontains=location
+        )
+        
+    if min_rent:
+        rooms=rooms.filter(
+            rent__gte=min_rent
         )
         
     if max_rent:
@@ -51,6 +61,16 @@ def room_list(request):
     if available:
         rooms=rooms.filter(
             is_available=True
+        )
+        
+    if room_type:
+        rooms=rooms.filter(
+            room_type=room_type
+        )
+        
+    if gender:
+        rooms=rooms.filter(
+            gender_preference=gender
         )
         
     sort=request.GET.get("sort")

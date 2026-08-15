@@ -1,54 +1,93 @@
 {% extends "base.html" %}
+
+{% block title %}
+    User Dashboard | Room Buddies
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
+<div class="container py-4">
+    <!-- Welcome Banner -->
+    <div class="card-modern p-4 mb-4 bg-white shadow-sm border-0 position-relative overflow-hidden">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center fs-3" style="width: 64px; height: 64px;">
+                {{ user.first_name|default:user.email|first|upper }}
+            </div>
+            <div>
+                <h2 class="fw-bold mb-1 text-dark">
+                    Welcome, {{ user.first_name|default:user.email }}! 👋
+                </h2>
+                <p class="text-muted mb-0 small">Manage your profile details, room searches, and service bookings here.</p>
+            </div>
+        </div>
+    </div>
 
-    <div class="row">
-
+    <div class="row g-4">
+        <!-- Profile Info Card -->
         <div class="col-md-6">
+            <div class="card-modern h-100 p-4 border-0 shadow-sm">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                    <h4 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                        <span>👤</span> Profile Details
+                    </h4>
+                    <span class="badge badge-primary-soft">
+                        {{ user.get_role_display }}
+                    </span>
+                </div>
 
-            <div class="card">
-                <div class="card-body">
+                <div class="space-y-3">
+                    <div class="p-3 bg-light rounded-3 mb-3">
+                        <small class="text-muted d-block text-uppercase fw-semibold fs-xs">Email Address</small>
+                        <span class="fw-bold text-dark fs-6">{{ user.email }}</span>
+                    </div>
 
-                    <h3>Profile</h3>
-
-                    <p>Email: {{ user.email }}</p>
-
-                    <p>Role: {{ user.get_role_display }}</p>
-
+                    <div class="p-3 bg-light rounded-3">
+                        <small class="text-muted d-block text-uppercase fw-semibold fs-xs">Account Type</small>
+                        <span class="fw-bold text-dark fs-6">{{ user.get_role_display }} Account</span>
+                    </div>
                 </div>
             </div>
-
         </div>
 
+        <!-- Quick Actions Card -->
         <div class="col-md-6">
+            <div class="card-modern h-100 p-4 border-0 shadow-sm">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                    <h4 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                        <span>⚡</span> Quick Actions
+                    </h4>
+                </div>
 
-           <div class="card">
-    <div class="card-body">
-
-        <h3>Quick Actions</h3>
-
-        {% if user.role == "USER" %}
-
-            <a href="#" class="btn btn-primary mb-2">Search Rooms</a><br>
-
-            <a href="#" class="btn btn-success mb-2">My Bookings</a><br>
-
-            <a href="#" class="btn btn-warning">Wishlist</a>
-
-        {% elif user.role == "PROVIDER" %}
-
-            <a href="#" class="btn btn-primary mb-2">Manage Services</a><br>
-
-            <a href="#" class="btn btn-success">View Bookings</a>
-
-        {% endif %}
-
-    </div>
-</div>
-
+                <div class="d-flex flex-column gap-2">
+                    {% if user.role == "USER" %}
+                        <a href="{% url 'rooms:room_list' %}" class="btn btn-primary d-flex align-items-center justify-content-between p-3">
+                            <span>🔍 Search Available Rooms</span>
+                            <span>→</span>
+                        </a>
+                        <a href="{% url 'user_services:my_service_bookings' %}" class="btn btn-outline-primary d-flex align-items-center justify-content-between p-3">
+                            <span>📋 View My Service Bookings</span>
+                            <span>→</span>
+                        </a>
+                        <a href="{% url 'wishlist:wishlist_list' %}" class="btn btn-light d-flex align-items-center justify-content-between p-3 border">
+                            <span>❤️ My Saved Wishlist</span>
+                            <span>→</span>
+                        </a>
+                    {% elif user.role == "PROVIDER" %}
+                        <a href="{% url 'provider_services:my_services' %}" class="btn btn-primary d-flex align-items-center justify-content-between p-3">
+                            <span>🛠️ Manage My Offered Services</span>
+                            <span>→</span>
+                        </a>
+                        <a href="{% url 'provider_services:service_booking_requests' %}" class="btn btn-outline-primary d-flex align-items-center justify-content-between p-3">
+                            <span>📋 Review Service Requests</span>
+                            <span>→</span>
+                        </a>
+                        <a href="{% url 'dashboard:provider_dashboard' %}" class="btn btn-light d-flex align-items-center justify-content-between p-3 border">
+                            <span>📊 Provider Dashboard</span>
+                            <span>→</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-
     </div>
-
 </div>
-{% endblock %}
+{% endblock %}

@@ -1,38 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Bookings</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>My Bookings</h1>
+{% block title %}
+    My Room Bookings | Room Buddies
+{% endblock %}
 
-{% if bookings %}
+{% block content %}
+<div class="container py-3">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                <span>📋</span> My Room Bookings
+            </h1>
+            <p class="text-muted mb-0 small">Track status of your requested room bookings and process payments.</p>
+        </div>
+        <a href="{% url 'rooms:room_list' %}" class="btn btn-primary btn-sm px-3">
+            🔍 Browse Rooms
+        </a>
+    </div>
 
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Room</th>
-        <th>Owner</th>
-        <th>Status</th>
-        <th>Booked On</th>
-    </tr>
-
-    {% for booking in bookings %}
-    <tr>
-        <td>{{ booking.room.title }}</td>
-        <td>{{ booking.room.owner.email }}</td>
-        <td>{{ booking.status }}</td>
-        <td>{{ booking.created_at }}</td>
-    </tr>
-    {% endfor %}
-
-</table>
-
-{% else %}
-
-<p>You haven't booked any rooms yet.</p>
-
-{% endif %}
-
-</body>
-</html>
+    {% if bookings %}
+    <div class="card-modern border-0 shadow-sm overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Room Title</th>
+                        <th>Room Owner</th>
+                        <th>Status</th>
+                        <th>Requested On</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td class="fw-bold text-dark">
+                            <a href="{% url 'rooms:room_detail' booking.room.id %}" class="text-dark hover-primary">
+                                {{ booking.room.title }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge badge-info-soft">👤</span>
+                                <span>{{ booking.room.owner.email }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if booking.status == "ACCEPTED" %}
+                                <span class="badge badge-success-soft">✅ Accepted</span>
+                            {% elif booking.status == "PENDING" %}
+                                <span class="badge badge-warning-soft">⏳ Pending Provider</span>
+                            {% elif booking.status == "REJECTED" %}
+                                <span class="badge badge-danger-soft">❌ Rejected</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle">{{ booking.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted small">
+                            {{ booking.created_at|date:"d M Y, H:i" }}
+                        </td>
+                        <td class="text-end">
+                            {% if booking.status == "ACCEPTED" %}
+                                {% if booking.payment %}
+                                    <span class="badge badge-success-soft me-2">✅ Paid</span>
+                                    {% if booking.review %}
+                                        <span class="badge badge-primary-soft">⭐ Reviewed</span>
+                                    {% else %}
+                                        <a href="{% url 'reviews:add_review' booking.id %}" class="btn btn-primary btn-sm">
+                                            ⭐ Write Review
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'payments:create_payment' booking.id %}" class="btn btn-success btn-sm px-3 shadow-sm">
+                                        💳 Pay Now
+                                    </a>
+                                {% endif %}
+                            {% elif booking.status == "PENDING" %}
+                                <span class="text-muted small fst-italic">Waiting for Provider</span>
+                            {% elif booking.status == "REJECTED" %}
+                                <span class="text-danger small fw-semibold">Booking Rejected</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📅</div>
+        <div class="empty-title">No Room Bookings Found</div>
+        <div class="empty-subtitle">You haven't requested any room bookings yet. Explore available listings to submit a request.</div>
+        <a href="{% url 'rooms:room_list' %}" class="btn btn-primary px-4">Browse Rooms</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

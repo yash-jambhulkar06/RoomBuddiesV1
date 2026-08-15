@@ -1,0 +1,976 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Room Buddies | Find Your Space</title>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Landing Page CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/landing.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+     NAVBAR
+     ===================================================== -->
+
+<nav class="landing-navbar">
+
+    <div class="landing-navbar-container">
+
+        <!-- Logo -->
+
+        <a
+            href="{% url 'home' %}"
+            class="landing-logo"
+        >
+            <span class="landing-logo-icon">
+                🏠
+            </span>
+
+            <span>
+                Room Buddies
+            </span>
+        </a>
+
+
+        <!-- Desktop Navigation -->
+
+        <div class="landing-nav-links">
+
+            <a
+                href="{% url 'home' %}"
+                class="landing-nav-link active"
+            >
+                Home
+            </a>
+
+            <a
+                href="{% url 'rooms:room_list' %}"
+                class="landing-nav-link"
+            >
+                Rooms
+            </a>
+
+            <a
+                href="{% url 'user_services:service_list' %}"
+                class="landing-nav-link"
+            >
+                Services
+            </a>
+
+        </div>
+
+
+        <!-- Authentication -->
+
+        <div class="landing-nav-actions">
+
+            {% if user.is_authenticated %}
+
+                <a
+                    href="{% url 'accounts:dashboard' %}"
+                    class="landing-nav-dashboard"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="{% url 'accounts:logout' %}"
+                    class="landing-nav-login"
+                >
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{% url 'accounts:login' %}"
+                    class="landing-nav-login"
+                >
+                    Login
+                </a>
+
+                <a
+                    href="{% url 'accounts:register' %}"
+                    class="landing-nav-register"
+                >
+                    Register
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<section class="landing-hero">
+
+    <div class="landing-hero-container">
+
+        <!-- Left Content -->
+
+        <div class="landing-hero-content">
+
+            <span class="landing-hero-badge">
+                ✨ Everything you need, in one place
+            </span>
+
+            <h1>
+                Find Your Space.
+                <span>Find Your Community.</span>
+            </h1>
+
+            <p>
+                Discover comfortable rooms, trusted roommates,
+                and reliable everyday services — all in one place.
+            </p>
+
+
+            <!-- CTA Buttons -->
+
+            <div class="landing-hero-actions">
+
+                <a
+                    href="{% url 'rooms:room_list' %}"
+                    class="landing-btn landing-btn-primary"
+                >
+                    🏠 Find a Room
+                </a>
+
+                <a
+                    href="{% url 'user_services:service_list' %}"
+                    class="landing-btn landing-btn-secondary"
+                >
+                    🛠️ Explore Services
+                </a>
+
+            </div>
+
+
+            <!-- Trust Info -->
+
+            <div class="landing-hero-trust">
+
+                <div class="landing-trust-item">
+
+                    <span class="landing-trust-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Trusted Providers
+                    </span>
+
+                </div>
+
+
+                <div class="landing-trust-item">
+
+                    <span class="landing-trust-icon">
+                        🔒
+                    </span>
+
+                    <span>
+                        Secure Payments
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Visual -->
+
+        <div class="landing-hero-visual">
+
+            <div class="landing-hero-image-wrapper">
+
+                <!-- Temporary image placeholder -->
+
+                <div class="landing-hero-image-placeholder">
+
+                    <span>
+                        🏠
+                    </span>
+
+                    <p>
+                        Your new space awaits
+                    </p>
+
+                </div>
+
+
+                <!-- Floating Card: Room -->
+
+                <div class="landing-floating-card landing-room-card">
+
+                    <div class="landing-floating-icon">
+                        🏠
+                    </div>
+
+                    <div>
+
+                        <small>
+                            Comfortable Rooms
+                        </small>
+
+                        <strong>
+                            Find your space
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Floating Card: Rating -->
+
+                <div class="landing-floating-card landing-rating-card">
+
+                    <div class="landing-floating-icon">
+                        ⭐
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Trusted
+                        </strong>
+
+                        <small>
+                            Service Providers
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Floating Card: Location -->
+
+                <div class="landing-floating-card landing-location-card">
+
+                    <span>
+                        📍
+                    </span>
+
+                    <strong>
+                        Near You
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     WHAT WE OFFER
+     ===================================================== -->
+
+<section class="landing-offers">
+
+    <div class="landing-section-container">
+
+        <!-- Section Header -->
+
+        <div class="landing-section-header">
+
+            <span class="landing-section-badge">
+                WHAT WE OFFER
+            </span>
+
+            <h2>
+                Everything You Need,
+                <span>Under One Roof.</span>
+            </h2>
+
+            <p>
+                From finding the right room to managing everyday needs,
+                Room Buddies makes living easier.
+            </p>
+
+        </div>
+
+
+        <!-- Offer Cards -->
+
+        <div class="landing-offers-grid">
+
+
+            <!-- Rooms -->
+
+            <a
+                href="{% url 'rooms:room_list' %}"
+                class="landing-offer-card"
+            >
+
+                <div class="landing-offer-icon rooms-icon">
+                    🏠
+                </div>
+
+                <div class="landing-offer-content">
+
+                    <h3>
+                        Rooms & Roommates
+                    </h3>
+
+                    <p>
+                        Find comfortable rooms and connect with
+                        suitable roommates in your preferred location.
+                    </p>
+
+                    <span class="landing-offer-link">
+                        Explore Rooms →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Tiffin -->
+
+            <a
+                href="{% url 'user_services:service_list' %}"
+                class="landing-offer-card"
+            >
+
+                <div class="landing-offer-icon tiffin-icon">
+                    🍱
+                </div>
+
+                <div class="landing-offer-content">
+
+                    <h3>
+                        Tiffin Services
+                    </h3>
+
+                    <p>
+                        Get reliable and convenient homemade-style
+                        meals delivered to your doorstep.
+                    </p>
+
+                    <span class="landing-offer-link">
+                        Find Tiffin →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Laundry -->
+
+            <a
+                href="{% url 'user_services:service_list' %}"
+                class="landing-offer-card"
+            >
+
+                <div class="landing-offer-icon laundry-icon">
+                    🧺
+                </div>
+
+                <div class="landing-offer-content">
+
+                    <h3>
+                        Laundry Services
+                    </h3>
+
+                    <p>
+                        Save time with convenient laundry services
+                        from trusted local providers.
+                    </p>
+
+                    <span class="landing-offer-link">
+                        Find Laundry →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- Water -->
+
+            <a
+                href="{% url 'user_services:service_list' %}"
+                class="landing-offer-card"
+            >
+
+                <div class="landing-offer-icon water-icon">
+                    💧
+                </div>
+
+                <div class="landing-offer-content">
+
+                    <h3>
+                        Water Can
+                    </h3>
+
+                    <p>
+                        Order drinking water from nearby providers
+                        whenever you need it.
+                    </p>
+
+                    <span class="landing-offer-link">
+                        Find Water →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     WHY CHOOSE ROOM BUDDIES
+     ===================================================== -->
+
+<section class="landing-why">
+
+    <div class="landing-section-container">
+
+        <div class="landing-why-grid">
+
+            <!-- Left Content -->
+
+            <div class="landing-why-content">
+
+                <span class="landing-section-badge">
+                    WHY ROOM BUDDIES?
+                </span>
+
+                <h2>
+                    Made for
+                    <span>Better Living.</span>
+                </h2>
+
+                <p>
+                    Room Buddies brings accommodation and everyday
+                    services together so you can spend less time
+                    searching and more time enjoying your space.
+                </p>
+
+
+                <!-- Feature -->
+
+                <div class="landing-why-item">
+
+                    <div class="landing-why-icon">
+                        🔍
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Easy to Find
+                        </h4>
+
+                        <p>
+                            Quickly discover rooms and essential
+                            services near your preferred location.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Feature -->
+
+                <div class="landing-why-item">
+
+                    <div class="landing-why-icon">
+                        🛡️
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Trusted Providers
+                        </h4>
+
+                        <p>
+                            Connect with service providers and
+                            room owners through one reliable platform.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Feature -->
+
+                <div class="landing-why-item">
+
+                    <div class="landing-why-icon">
+                        💳
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Secure Payments
+                        </h4>
+
+                        <p>
+                            Make your payments securely through
+                            our integrated payment system.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Right Visual -->
+
+            <div class="landing-why-visual">
+
+                <div class="landing-why-card">
+
+                    <div class="landing-why-card-icon">
+                        🏠
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Your Space
+                        </strong>
+
+                        <span>
+                            Comfortable & convenient
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="landing-why-card">
+
+                    <div class="landing-why-card-icon">
+                        🛠️
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Your Services
+                        </strong>
+
+                        <span>
+                            Everything nearby
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="landing-why-card">
+
+                    <div class="landing-why-card-icon">
+                        🤝
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Your Community
+                        </strong>
+
+                        <span>
+                            Connect & live better
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     HOW IT WORKS
+     ===================================================== -->
+
+<section class="landing-how-it-works">
+
+    <div class="landing-section-container">
+
+        <!-- Section Header -->
+
+        <div class="landing-section-header">
+
+            <span class="landing-section-badge">
+                HOW IT WORKS
+            </span>
+
+            <h2>
+                Simple.
+                <span>Quick. Convenient.</span>
+            </h2>
+
+            <p>
+                Getting started with Room Buddies takes only a few steps.
+            </p>
+
+        </div>
+
+
+        <!-- Steps -->
+
+        <div class="landing-steps">
+
+
+            <!-- Step 1 -->
+
+            <div class="landing-step">
+
+                <div class="landing-step-number">
+                    01
+                </div>
+
+                <div class="landing-step-icon">
+                    🔎
+                </div>
+
+                <h3>
+                    Find What You Need
+                </h3>
+
+                <p>
+                    Browse available rooms, roommates, and
+                    essential services in your area.
+                </p>
+
+            </div>
+
+
+            <!-- Step 2 -->
+
+            <div class="landing-step">
+
+                <div class="landing-step-number">
+                    02
+                </div>
+
+                <div class="landing-step-icon">
+                    🤝
+                </div>
+
+                <h3>
+                    Book & Connect
+                </h3>
+
+                <p>
+                    Choose what suits you and send a booking
+                    request to the room owner or service provider.
+                </p>
+
+            </div>
+
+
+            <!-- Step 3 -->
+
+            <div class="landing-step">
+
+                <div class="landing-step-number">
+                    03
+                </div>
+
+                <div class="landing-step-icon">
+                    🏠
+                </div>
+
+                <h3>
+                    Live Better
+                </h3>
+
+                <p>
+                    Complete your booking, make secure payments,
+                    and enjoy a more convenient living experience.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     FINAL CTA
+     ===================================================== -->
+
+<section class="landing-final-cta">
+
+    <div class="landing-section-container">
+
+        <div class="landing-cta-card">
+
+            <div class="landing-cta-content">
+
+                <span class="landing-section-badge">
+                    START YOUR JOURNEY
+                </span>
+
+                <h2>
+                    Ready to Find Your
+                    <span>Perfect Space?</span>
+                </h2>
+
+                <p>
+                    Explore rooms, connect with people,
+                    and discover essential services around you.
+                </p>
+
+
+                <div class="landing-cta-actions">
+
+                    <a
+                        href="{% url 'rooms:room_list' %}"
+                        class="landing-btn landing-btn-light"
+                    >
+                        🏠 Explore Rooms
+                    </a>
+
+                    <a
+                        href="{% url 'accounts:register' %}"
+                        class="landing-btn landing-btn-outline-light"
+                    >
+                        Create an Account
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Decorative Icon -->
+
+            <div class="landing-cta-decoration">
+
+                <div class="landing-cta-circle">
+                    🏠
+                </div>
+
+                <div class="landing-cta-small-circle">
+                    ✨
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="landing-footer">
+
+    <div class="landing-footer-container">
+
+        <!-- Brand -->
+
+        <div class="landing-footer-brand">
+
+            <a
+                href="{% url 'home' %}"
+                class="landing-logo"
+            >
+
+                <span class="landing-logo-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Room Buddies
+                </span>
+
+            </a>
+
+            <p>
+                Find your space, connect with your community,
+                and make everyday living easier.
+            </p>
+
+        </div>
+
+
+        <!-- Platform -->
+
+        <div class="landing-footer-column">
+
+            <h4>
+                Platform
+            </h4>
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'rooms:room_list' %}">
+                Rooms
+            </a>
+
+            <a href="{% url 'user_services:service_list' %}">
+                Services
+            </a>
+
+        </div>
+
+
+        <!-- Account -->
+
+        <div class="landing-footer-column">
+
+            <h4>
+                Account
+            </h4>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'accounts:dashboard' %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'accounts:logout' %}">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'accounts:login' %}">
+                    Login
+                </a>
+
+                <a href="{% url 'accounts:register' %}">
+                    Register
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Services -->
+
+        <div class="landing-footer-column">
+
+            <h4>
+                Services
+            </h4>
+
+            <a href="{% url 'user_services:service_list' %}">
+                🍱 Tiffin
+            </a>
+
+            <a href="{% url 'user_services:service_list' %}">
+                🧺 Laundry
+            </a>
+
+            <a href="{% url 'user_services:service_list' %}">
+                💧 Water Can
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Bottom -->
+
+    <div class="landing-footer-bottom">
+
+        <p>
+            © {% now "Y" %} Room Buddies. All rights reserved.
+        </p>
+
+        <span>
+            Made for better living. 💜
+        </span>
+
+    </div>
+
+</footer>
+
+
+</body>
+
+</html>

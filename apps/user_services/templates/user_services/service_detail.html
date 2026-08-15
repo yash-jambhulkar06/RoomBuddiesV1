@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ service.title }} | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/user_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="service-detail-page">
+
+    <!-- =====================================================
+         SERVICE HERO
+         ===================================================== -->
+
+    <div class="service-detail-container">
+
+        <div class="service-detail-card">
+
+            <div class="service-detail-main">
+
+                <!-- Service Header -->
+
+                <div class="service-detail-header">
+
+                    <div>
+
+                        <!-- Service Type -->
+
+                        {% if service.service_type == "TIFFIN" %}
+
+                            <span class="service-detail-type tiffin-type">
+                                🍱 Tiffin
+                            </span>
+
+                        {% elif service.service_type == "LAUNDRY" %}
+
+                            <span class="service-detail-type laundry-type">
+                                🧺 Laundry
+                            </span>
+
+                        {% elif service.service_type == "WATER_CAN" %}
+
+                            <span class="service-detail-type water-type">
+                                💧 Water Can
+                            </span>
+
+                        {% endif %}
+
+
+                        <h1>
+                            {{ service.title }}
+                        </h1>
+
+
+                        <!-- Rating -->
+
+                        {% if average_rating %}
+
+                            <div class="service-detail-rating">
+
+                                <span class="rating-star">
+                                    ★
+                                </span>
+
+                                <strong>
+                                    {{ average_rating|floatformat:1 }}
+                                </strong>
+
+                                <span>
+                                    / 5
+                                </span>
+
+                                <span class="rating-count">
+                                    ({{ reviews|length }}
+                                    review{{ reviews|length|pluralize }})
+                                </span>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="service-detail-no-rating">
+                                ⭐ No reviews yet
+                            </div>
+
+                        {% endif %}
+
+
+                        <p>
+                            Essential service from Room Buddies
+                        </p>
+
+                    </div>
+
+
+                    <!-- Availability -->
+
+                    <span class="service-detail-availability">
+                        <span>✓</span>
+                        Available
+                    </span>
+
+                </div>
+
+
+                <div class="service-detail-divider"></div>
+
+
+                <!-- =================================================
+                     DESCRIPTION
+                     ================================================= -->
+
+                <section class="service-detail-section">
+
+                    <h3>
+                        About this service
+                    </h3>
+
+                    <p class="service-detail-description">
+                        {{ service.description }}
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     PROVIDER
+                     ================================================= -->
+
+                <section class="service-provider-card">
+
+                    <div class="service-provider-icon">
+                        👤
+                    </div>
+
+                    <div class="service-provider-info">
+
+                        <span>
+                            Service Provider
+                        </span>
+
+                        <strong>
+                            {{ service.provider.first_name }}
+                            {{ service.provider.last_name }}
+                        </strong>
+
+                        <small>
+                            {{ service.provider.email }}
+                        </small>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     BOOKING / PRICE
+                     ================================================= -->
+
+                <div class="service-detail-booking-area">
+
+                    <div class="service-detail-price">
+
+                        <span>
+                            Service Price
+                        </span>
+
+                        <strong>
+                            ₹{{ service.price }}
+                        </strong>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'user_services:book_service' service.id %}"
+                        class="service-detail-book-btn"
+                    >
+                        🛒 Book Service
+                    </a>
+
+                </div>
+
+
+                <!-- Back -->
+
+                <a
+                    href="{% url 'user_services:service_list' %}"
+                    class="service-detail-back"
+                >
+                    ← Back to Services
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CUSTOMER REVIEWS
+             ===================================================== -->
+
+        <section class="service-reviews-section">
+
+            <div class="service-reviews-header">
+
+                <div>
+
+                    <span class="service-reviews-label">
+                        CUSTOMER FEEDBACK
+                    </span>
+
+                    <h2>
+                        Customer Reviews
+                    </h2>
+
+                </div>
+
+
+                {% if reviews %}
+
+                    <div class="service-review-summary">
+
+                        <span class="rating-star">
+                            ★
+                        </span>
+
+                        <strong>
+                            {{ average_rating|floatformat:1 }}
+                        </strong>
+
+                        <span>
+                            / 5
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if reviews %}
+
+                <div class="service-reviews-grid">
+
+                    {% for review in reviews %}
+
+                        <article class="service-review-card">
+
+                            <!-- Review Header -->
+
+                            <div class="service-review-header">
+
+                                <div class="service-review-user">
+
+                                    <div class="service-review-avatar">
+
+                                        {{ review.user.first_name|first|upper }}
+
+                                    </div>
+
+                                    <div>
+
+                                        <h4>
+                                            {{ review.user.first_name }}
+                                            {{ review.user.last_name }}
+                                        </h4>
+
+                                        <small>
+                                            {{ review.created_at|date:"M d, Y" }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="service-review-rating">
+                                    ★ {{ review.rating }}/5
+                                </span>
+
+                            </div>
+
+
+                            <div class="service-review-divider"></div>
+
+
+                            <!-- Review Comment -->
+
+                            <p class="service-review-comment">
+                                "{{ review.comment }}"
+                            </p>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="service-no-reviews">
+
+                    <div class="service-no-reviews-icon">
+                        ⭐
+                    </div>
+
+                    <h3>
+                        No Reviews Yet
+                    </h3>
+
+                    <p>
+                        Be the first customer to review this service.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

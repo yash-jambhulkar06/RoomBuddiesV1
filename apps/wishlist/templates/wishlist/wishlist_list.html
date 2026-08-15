@@ -1,30 +1,77 @@
 {% extends "base.html" %}
 
-{% block content %}
-
-<h1>My Wishlist ❤️</h1>
-
-{% if wishlist %}
-
-<ul>
-    {% for item in wishlist %}
-        <li>
-            <strong>{{ item.room.title }}</strong><br>
-            📍 {{ item.room.location }}<br>
-            💰 ₹{{ item.room.rent }}/month<br>
-
-            <a href="{% url 'rooms:room_detail' item.room.id %}">
-                View Details
-            </a>
-        </li>
-        <hr>
-    {% endfor %}
-</ul>
-
-{% else %}
-
-<p>Your wishlist is empty.</p>
-
-{% endif %}
-
+{% block title %}
+    My Saved Wishlist | Room Buddies
 {% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                <span>❤️</span> My Saved Wishlist
+            </h1>
+            <p class="text-muted mb-0 small">Keep track of rooms you saved to review or contact later.</p>
+        </div>
+        <a href="{% url 'rooms:room_list' %}" class="btn btn-primary btn-sm px-3">
+            🔍 Discover More Rooms
+        </a>
+    </div>
+
+    {% if wishlist %}
+    <div class="row g-4">
+        {% for item in wishlist %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card-modern card-hover h-100 border-0 shadow-sm bg-white">
+                <div style="height: 200px; overflow: hidden; background: #e2e8f0;" class="position-relative">
+                    {% if item.room.image %}
+                        <img src="{{ item.room.image.url }}" alt="{{ item.room.title }}" class="w-100 h-100" style="object-fit: cover;">
+                    {% else %}
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fs-3">🏠</div>
+                    {% endif %}
+                    <span class="position-absolute top-0 end-0 m-3 badge badge-danger-soft">
+                        ❤️ Saved
+                    </span>
+                </div>
+
+                <div class="p-4 d-flex flex-column justify-content-between flex-grow-1">
+                    <div>
+                        <h4 class="fw-bold text-dark fs-5 mb-2 line-clamp-1">
+                            {{ item.room.title }}
+                        </h4>
+                        <p class="text-muted small mb-2 d-flex align-items-center gap-1">
+                            📍 {{ item.room.location }}
+                        </p>
+                    </div>
+
+                    <div class="mt-3 pt-3 border-top d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="fs-xs text-muted d-block">Monthly Rent</span>
+                            <span class="fw-bold text-primary fs-5">₹{{ item.room.rent }}</span>
+                            <span class="fs-xs text-muted">/mo</span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'wishlist:toggle_wishlist' item.room.id %}" class="btn btn-sm btn-outline-danger" title="Remove from wishlist">
+                                🗑️
+                            </a>
+                            <a href="{% url 'rooms:room_detail' item.room.id %}" class="btn btn-primary btn-sm px-3">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">❤️</div>
+        <div class="empty-title">Your Wishlist is Empty</div>
+        <div class="empty-subtitle">Save rooms while browsing by clicking the heart icon on any room listing card.</div>
+        <a href="{% url 'rooms:room_list' %}" class="btn btn-primary px-4">Browse Available Rooms</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

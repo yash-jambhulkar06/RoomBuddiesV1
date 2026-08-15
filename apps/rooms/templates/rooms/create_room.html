@@ -1,16 +1,85 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Room</title>
-</head>
-<body>
-<h1>Add Room</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form.as_p}}
+{% extends "base.html" %}
 
-        <button type="submit">Save Room</button>
-    </form>
-    
-</body>
-</html>
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">🏠 Add New Room</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST" enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            {{ form.title }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            {{ form.description }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Monthly Rent</label>
+                            {{ form.rent }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            {{ form.location }}
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Room Type</label>
+                                {{ form.room_type }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Gender Preference</label>
+                                {{ form.gender_preference }}
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Room Image</label>
+                            {{ form.image }}
+                        </div>
+
+                        <div class="form-check mb-4">
+                            {{ form.is_available }}
+                            <label class="form-check-label">
+                                Room Available
+                            </label>
+                        </div>
+
+                        <button class="btn btn-primary w-100" type="submit">
+                            Save Room
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

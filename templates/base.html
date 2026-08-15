@@ -1,73 +1,219 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Room Buddies</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            Room Buddies | Find Rooms & Services
+        {% endblock %}
+    </title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/room_list.css' %}">
-    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+    <!-- Main Design System CSS -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
     {% block extra_css %}
     {% endblock %}
-    <style>
-.alert{
-    padding:12px;
-    margin:10px;
-    border-radius:6px;
-    font-weight:bold;
-}
-
-.success{
-    background:#d4edda;
-    color:#155724;
-}
-
-.error{
-    background:#f8d7da;
-    color:#721c24;
-}
-
-.warning{
-    background:#fff3cd;
-    color:#856404;
-}
-</style>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container">
-   
-    <a class="navbar-brand" href="{% url 'accounts:dashboard'%}">Room Buddies</a>|
-    <div class="navbar-nav ms-auto">
-        {% if user.is_authenticated %}
-        <a href="{% url 'wishlist:wishlist_list' %}">
-            ❤️ Wishlist ({{ request.user.wishlist_items.count }})
+        <!-- Brand -->
+        <a class="navbar-brand navbar-brand-custom" href="{% url 'accounts:dashboard' %}">
+            <span class="logo-icon">🏠</span>
+            <span>Room Buddies</span>
         </a>
-       {% if user.role == "PROVIDER" %}
-    <a class="nav-link" href="{% url 'dashboard:provider_dashboard' %}">
-        Provider Dashboard
-    </a>
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <div class="navbar-nav ms-auto align-items-lg-center gap-1">
+
+                {% if user.is_authenticated %}
+
+                <!-- Dashboard -->
+                <a class="nav-link nav-link-custom d-flex align-items-center gap-2" href="{% url 'accounts:dashboard' %}">
+                    <span>🏠</span> Dashboard
+                </a>
+
+                <!-- Wishlist -->
+                <a class="nav-link nav-link-custom d-flex align-items-center gap-2" href="{% url 'wishlist:wishlist_list' %}">
+                    <span>❤️</span> Wishlist
+                    <span class="badge badge-danger-soft rounded-pill ms-1">
+                        {{ request.user.wishlist_items.count }}
+                    </span>
+                </a>
+
+                <!-- Chat -->
+                <a class="nav-link nav-link-custom d-flex align-items-center gap-2" href="{% url 'chat:conversation_list' %}">
+                    <span>💬</span> Chat
+                </a>
+
+                <!-- Services -->
+                <a class="nav-link nav-link-custom d-flex align-items-center gap-2" href="{% url 'user_services:service_list' %}">
+                    <span>🛠️</span> Services
+                </a>
+
+                <!-- My Bookings -->
+                <a class="nav-link nav-link-custom d-flex align-items-center gap-2" href="{% url 'user_services:my_service_bookings' %}">
+                    <span>📋</span> Service Bookings
+                </a>
+
+                <!-- Provider Menu -->
+                {% if user.role == "PROVIDER" %}
+                <div class="dropdown ms-lg-2">
+                    <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>🛠️</span> Provider Panel
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
+                        <li><h6 class="dropdown-header text-uppercase fs-xs fw-bold">Provider Panel</h6></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="{% url 'dashboard:provider_dashboard' %}">
+                                📊 Provider Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="{% url 'provider_services:my_services' %}">
+                                🛠️ My Services
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="{% url 'provider_services:service_booking_requests' %}">
+                                📋 Booking Requests
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="{% url 'provider_services:add_service' %}">
+                                ➕ Add Service
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Notifications -->
+                <a class="nav-link nav-link-custom position-relative d-flex align-items-center gap-1 ms-lg-1" href="{% url 'notifications:notification_list' %}">
+                    <span>🔔</span> Notifications
+                    {% if notification_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-1">
+                        {{ notification_count }}
+                    </span>
+                    {% endif %}
+                </a>
+
+                <!-- User Profile Menu -->
+                <div class="dropdown ms-lg-3 mt-2 mt-lg-0">
+                    <button class="btn btn-gradient btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>👤</span> {{ user.first_name|default:user.email }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
+                        <li>
+                            <div class="px-3 py-2">
+                                <p class="fw-bold mb-0 text-dark">{{ user.first_name }} {{ user.last_name }}</p>
+                                <small class="text-muted fs-xs">{{ user.email }}</small>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <a class="dropdown-item py-2 text-danger fw-semibold" href="{% url 'accounts:logout' %}">
+                                🚪 Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {% else %}
+
+                <!-- Guest Navigation -->
+                <a class="nav-link nav-link-custom px-3" href="{% url 'accounts:login' %}">
+                    🔐 Login
+                </a>
+                <a class="btn btn-primary btn-sm px-4 ms-lg-2 mt-2 mt-lg-0" href="{% url 'accounts:register' %}">
+                    ✨ Register
+                </a>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ================= ALERT MESSAGES ================= -->
+{% if messages %}
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm border-0 rounded-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
 
-<a class="nav-link" href="{% url 'accounts:dashboard' %}">
-    Dashboard
-</a>
-         <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+<!-- ================= MAIN CONTENT ================= -->
+<main class="container py-4 min-vh-100">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer-custom mt-auto">
+    <div class="container py-4">
+        <div class="row gy-4">
+            <!-- Brand -->
+            <div class="col-md-6">
+                <h5 class="fw-bold d-flex align-items-center gap-2 mb-2">
+                    <span class="fs-4">🏠</span> Room Buddies
+                </h5>
+                <p class="text-muted mb-0 max-w-sm" style="font-size: 0.95rem;">
+                    Find verified rooms, roommate listings, and essential service providers near you seamlessly in one unified platform.
+                </p>
+            </div>
+
+            <!-- Quick Links / Badges -->
+            <div class="col-md-6 text-md-end d-flex flex-column align-items-md-end justify-content-center">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge badge-primary-soft">🏠 Rooms & Flatmates</span>
+                    <span class="badge badge-success-soft">🛠️ Verified Services</span>
+                    <span class="badge badge-info-soft">💬 Real-time Chat</span>
+                </div>
+                <small class="text-muted">
+                    © 2026 Room Buddies. All rights reserved.
+                </small>
+            </div>
+        </div>
     </div>
-   
-    {% else %}
-    <a class="nav-link" href="{% url 'accounts:login'%}">Login</a>|
-    <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
-    {% endif %}
-</nav>
-<hr>
+</footer>
 
-{% block content %}
-{% endblock %}
-</div>
-
-<hr>
-
-<p>©2026 Room Buddies</p>
+<!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+</html>
+dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
 </html>

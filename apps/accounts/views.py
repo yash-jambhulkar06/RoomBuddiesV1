@@ -4,6 +4,11 @@ from django.contrib.auth import authenticate,login,logout
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
+
+
+def home(request):
+    return render(request,"home.html")
+
 def register(request):
     if request.method=="POST":
         form=RegisterForm(request.POST)

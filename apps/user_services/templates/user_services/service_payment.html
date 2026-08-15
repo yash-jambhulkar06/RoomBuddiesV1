@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Payment | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/user_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="service-payment-page">
+
+    <div class="service-payment-container">
+
+        <!-- =====================================================
+             PAYMENT CARD
+             ===================================================== -->
+
+        <div class="service-payment-card">
+
+            <!-- Header -->
+
+            <div class="service-payment-header">
+
+                <div class="service-payment-icon">
+                    💳
+                </div>
+
+                <span class="service-payment-label">
+                    SECURE CHECKOUT
+                </span>
+
+                <h1>
+                    Complete Payment
+                </h1>
+
+                <p>
+                    Complete your payment securely to confirm
+                    your service booking.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 BOOKING SUMMARY
+                 ================================================= -->
+
+            <div class="service-payment-summary">
+
+                <div class="service-payment-summary-title">
+                    Booking Summary
+                </div>
+
+
+                <!-- Service -->
+
+                <div class="service-payment-row">
+
+                    <span>
+                        Service
+                    </span>
+
+                    <strong>
+                        {{ booking.service.title }}
+                    </strong>
+
+                </div>
+
+
+                <!-- Provider -->
+
+                <div class="service-payment-row">
+
+                    <span>
+                        Provider
+                    </span>
+
+                    <strong>
+                        {{ booking.service.provider.first_name }}
+                        {{ booking.service.provider.last_name }}
+                    </strong>
+
+                </div>
+
+
+                <div class="service-payment-summary-divider"></div>
+
+
+                <!-- Amount -->
+
+                <div class="service-payment-total">
+
+                    <span>
+                        Total Amount
+                    </span>
+
+                    <strong>
+                        ₹{{ payment.amount }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACCEPTED MESSAGE
+                 ================================================= -->
+
+            <div class="service-payment-accepted">
+
+                <div class="service-payment-accepted-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <strong>
+                        Booking Accepted
+                    </strong>
+
+                    <p>
+                        Your service provider has accepted this booking.
+                        You can now complete the payment securely.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PAYMENT BUTTON
+                 ================================================= -->
+
+            <button
+                id="rzp-button"
+                type="button"
+                class="service-payment-button"
+            >
+                💳 Pay ₹{{ payment.amount }}
+            </button>
+
+
+            <!-- Back -->
+
+            <a
+                href="{% url 'user_services:my_service_bookings' %}"
+                class="service-payment-back"
+            >
+                ← Back to My Bookings
+            </a>
+
+
+            <!-- Security -->
+
+            <div class="service-payment-security">
+
+                <span>
+                    🔒
+                </span>
+
+                <div>
+                    <strong>
+                        Secure Payment
+                    </strong>
+
+                    <small>
+                        Your payment is securely processed by Razorpay.
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     RAZORPAY
+     ========================================================= -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+    const options = {
+
+        key: "{{ RAZORPAY_KEY_ID }}",
+
+        amount: "{{ order.amount }}",
+
+        currency: "{{ order.currency }}",
+
+        name: "Room Buddies",
+
+        description: "{{ booking.service.title }}",
+
+        order_id: "{{ order.id }}",
+
+        handler: function (response) {
+
+            window.location.href =
+                "{% url 'user_services:verify_service_payment' booking.id %}"
+                + "?razorpay_payment_id="
+                + encodeURIComponent(
+                    response.razorpay_payment_id
+                )
+                + "&razorpay_order_id="
+                + encodeURIComponent(
+                    response.razorpay_order_id
+                )
+                + "&razorpay_signature="
+                + encodeURIComponent(
+                    response.razorpay_signature
+                );
+
+        },
+
+        prefill: {
+
+            name:
+                "{{ request.user.first_name }} {{ request.user.last_name }}",
+
+            email:
+                "{{ request.user.email }}"
+
+        },
+
+        theme: {
+
+            color: "#6c5ce7"
+
+        }
+
+    };
+
+
+    const razorpay = new Razorpay(options);
+
+
+    document
+        .getElementById("rzp-button")
+        .onclick = function (event) {
+
+            event.preventDefault();
+
+            razorpay.open();
+
+        };
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Notifications | Room Buddies
+{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                <span>🔔</span> Notifications
+            </h1>
+            <p class="text-muted mb-0 small">Updates regarding your room bookings, service requests, and account activity.</p>
+        </div>
+    </div>
+
+    {% if notifications %}
+        <div class="d-flex flex-column gap-3">
+            {% for notification in notifications %}
+                <div class="card-modern p-3 border-0 shadow-sm bg-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 {% if not notification.is_read %}border-start border-primary border-4{% endif %}">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle {% if not notification.is_read %}bg-primary-subtle text-primary{% else %}bg-light text-muted{% endif %} d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                            🔔
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-semibold text-dark">{{ notification.message }}</p>
+                            {% if notification.created_at %}
+                                <small class="text-muted fs-xs">{{ notification.created_at|date:"d M Y, H:i" }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if not notification.is_read %}
+                        <a href="{% url 'notifications:mark_notification_read' notification.id %}" class="btn btn-outline-primary btn-sm px-3 flex-shrink-0">
+                            ✓ Mark as Read
+                        </a>
+                    {% else %}
+                        <span class="badge badge-success-soft align-self-start align-self-md-center">Read</span>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">🔔</div>
+                    <div class="empty-title">No Notifications Yet</div>
+                    <div class="empty-subtitle">You're all caught up! Updates regarding your bookings and requests will appear here.</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔔</div>
+            <div class="empty-title">No Notifications Yet</div>
+            <div class="empty-subtitle">You're all caught up! Updates regarding your bookings and requests will appear here.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import include,path
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.accounts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("",views.home,name="home"),
     path("accounts/",include("apps.accounts.urls")),
     path("rooms/",include("apps.rooms.urls")),
     path("bookings/",include("apps.bookings.urls")),
@@ -28,6 +30,10 @@ urlpatterns = [
     path("reviews/",include("apps.reviews.urls")),
     path("dashboard/",include("apps.dashboard.urls")),
     path("chat/",include("apps.chat.urls")),
+    path("notifications/",include("apps.notifications.urls")),
+    path("payments/",include("apps.payments.urls")),
+    path("provider-services/",include("apps.provider_services.urls")),
+    path("services/",include("apps.user_services.urls")),
 ]
 
 

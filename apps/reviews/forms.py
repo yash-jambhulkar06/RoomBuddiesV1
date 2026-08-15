@@ -12,19 +12,15 @@ class ReviewForm(forms.ModelForm):
 
         widgets = {
             "rating": forms.Select(
-                choices=[
-                    (1, "⭐ 1"),
-                    (2, "⭐⭐ 2"),
-                    (3, "⭐⭐⭐ 3"),
-                    (4, "⭐⭐⭐⭐ 4"),
-                    (5, "⭐⭐⭐⭐⭐ 5"),
-                ]
+                attrs={
+                    "class": "form-select",
+                }
             ),
-
             "comment": forms.Textarea(
                 attrs={
+                    "class": "form-control",
                     "rows": 4,
-                    "placeholder": "Write your review...",
+                    "placeholder": "Write your review here...",
                 }
             ),
         }

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 import environ
 
@@ -18,17 +18,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env=environ.Env()
 environ.Env.read_env(BASE_DIR/".env")
 
+RAZORPAY_KEY_ID = env("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET= env("RAZORPAY_KEY_SECRET")
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$-lqtmdhdta1i5zoh9^(y*fx%60s%z8+4t5icg1ii&usj(!2(0'
+SECRET_KEY=os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =os.environ.get("DEBUG","False").lower()=="true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS","localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -45,11 +48,14 @@ INSTALLED_APPS = [
     'apps.bookings',
     'apps.reviews',
     'apps.rooms',
-    'apps.services',
     'apps.wishlist',
     'apps.dashboard',
     'apps.chat',
     'channels',
+    'apps.notifications',
+    'apps.payments',
+    'apps.provider_services',
+    'apps.user_services',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +80,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.notifications.context_processors.notification_count',
+                'apps.services.context_processors.razorpay_settings',
             ],
         },
     },
@@ -136,6 +144,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS=[
     BASE_DIR/"static",
 ]
+
+STATIC_ROOT=BASE_DIR/"staticfiles"
+
 MEDIA_URL="/media/"
 MEDIA_ROOT=BASE_DIR/"media"
 
@@ -147,3 +158,5 @@ CHANNEL_LAYERS={
         "BACKEND":"channels.layers.InMemoryChannelLayer",
     },
 }
+
+

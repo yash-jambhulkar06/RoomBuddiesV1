@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Payments & Earnings | Room Buddies
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/provider_services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="provider-payments-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
+
+    <div class="provider-page-header">
+
+        <span class="provider-page-badge">
+            Provider Panel
+        </span>
+
+        <h1>
+            Payments & Earnings
+        </h1>
+
+        <p>
+            View your successful payments and total earnings.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         TOTAL EARNINGS
+         ===================================================== -->
+
+    <div class="earnings-card">
+
+        <div class="earnings-icon">
+            ₹
+        </div>
+
+        <div class="earnings-label">
+            Total Earnings
+        </div>
+
+        <div class="earnings-amount">
+            ₹{{ total_earnings }}
+        </div>
+
+        <div class="earnings-description">
+            Successfully received payments
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PAYMENT HISTORY
+         ===================================================== -->
+
+    <div class="payment-history-header">
+
+        <div>
+            <h2>
+                Payment History
+            </h2>
+
+            <p>
+                Your successful customer transactions
+            </p>
+        </div>
+
+        {% if payments %}
+            <span class="payment-count">
+                {{ payments|length }} Payment{{ payments|length|pluralize }}
+            </span>
+        {% endif %}
+
+    </div>
+
+
+    {% if payments %}
+
+        <div class="payments-grid">
+
+            {% for payment in payments %}
+
+                <div class="payment-card">
+
+                    <!-- Payment Header -->
+
+                    <div class="payment-card-header">
+
+                        <span class="payment-paid-badge">
+                            ✓ Paid
+                        </span>
+
+                        <span class="payment-number">
+                            #{{ payment.id }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Payment Type -->
+
+                    <div class="payment-type">
+
+                        {% if payment.booking %}
+
+                            <span class="payment-type-badge room-payment">
+                                🏠 Room Booking
+                            </span>
+
+                            <h3>
+                                {{ payment.booking.room.title }}
+                            </h3>
+
+                        {% elif payment.service_booking %}
+
+                            <span class="payment-type-badge service-payment">
+                                🛠️ Service Booking
+                            </span>
+
+                            <h3>
+                                {{ payment.service_booking.service.title }}
+                            </h3>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="payment-divider"></div>
+
+
+                    <!-- Customer -->
+
+                    <div class="payment-detail">
+
+                        <span class="payment-detail-label">
+                            Customer
+                        </span>
+
+                        <strong>
+                            {{ payment.user.first_name }}
+                            {{ payment.user.last_name }}
+                        </strong>
+
+                        <span class="payment-detail-secondary">
+                            {{ payment.user.email }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Amount -->
+
+                    <div class="payment-amount-section">
+
+                        <span>
+                            Amount Received
+                        </span>
+
+                        <strong>
+                            ₹{{ payment.amount }}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- Date -->
+
+                    <div class="payment-detail">
+
+                        <span class="payment-detail-label">
+                            Payment Date
+                        </span>
+
+                        <strong>
+                            {{ payment.created_at|date:"d M Y, h:i A" }}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- Razorpay ID -->
+
+                    {% if payment.razorpay_payment_id %}
+
+                        <div class="transaction-section">
+
+                            <span class="payment-detail-label">
+                                Transaction ID
+                            </span>
+
+                            <code>
+                                {{ payment.razorpay_payment_id }}
+                            </code>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <!-- Empty State -->
+
+        <div class="empty-payments-state">
+
+            <div class="empty-payment-icon">
+                💳
+            </div>
+
+            <h3>
+                No Payments Yet
+            </h3>
+
+            <p>
+                Successful payments from customers will appear here.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

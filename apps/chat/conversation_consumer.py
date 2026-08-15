@@ -3,15 +3,7 @@ from asgiref.sync import async_to_sync
 
 
 class ConversationConsumer(WebsocketConsumer):
-    # def connect(self):
-    #     self.group_name = f"user_{self.scope['user'].id}"
-
-    #     async_to_sync(self.channel_layer.group_add)(
-    #         self.group_name,
-    #         self.channel_name,
-    #     )
-
-    #     self.accept()
+   
     
     def connect(self):
         print("=== ConversationConsumer CONNECT ===")
@@ -36,4 +28,5 @@ class ConversationConsumer(WebsocketConsumer):
         )
 
     def conversation_update(self, event):
+        print("Conversation Update received:",event)
         self.send(text_data=event["text"])

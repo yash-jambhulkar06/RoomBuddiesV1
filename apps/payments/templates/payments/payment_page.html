@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Complete Payment | Room Buddies
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-modern p-4 p-md-5 border-0 shadow-lg bg-white">
+                <div class="text-center mb-4">
+                    <div class="fs-1 mb-2">💳</div>
+                    <h2 class="fw-bold text-dark mb-1">Complete Payment</h2>
+                    <p class="text-muted small">Secure payment gateway powered by Razorpay</p>
+                </div>
+
+                <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Item Description</span>
+                        <span class="fw-bold text-dark">Room Booking Fee</span>
+                    </div>
+                    <hr class="my-2 text-muted">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-dark">Total Amount Due</span>
+                        <span class="fw-bold text-success fs-4">₹{{ payment.amount }}</span>
+                    </div>
+                </div>
+
+                <button
+                    id="pay-btn"
+                    class="btn btn-success w-100 py-3 fw-bold fs-6 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                    🔒 Pay ₹{{ payment.amount }} Now
+                </button>
+
+                <div class="text-center mt-3">
+                    <small class="text-muted fs-xs">
+                        🛡️ 256-bit SSL Encrypted Payment
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+var options = {
+
+    "key": "{{ razorpay_key }}",
+
+    "amount": "{{ order.amount }}",
+
+    "currency": "INR",
+
+    "name": "Room Buddies",
+
+    "description": "Room Booking",
+
+    "order_id": "{{ order.id }}",
+
+    "handler": function (response){
+
+        window.location.href =
+        "/payments/verify/?payment_id=" +
+        response.razorpay_payment_id +
+        "&order_id=" +
+        response.razorpay_order_id +
+        "&signature=" +
+        response.razorpay_signature;
+
+    }
+
+};
+
+var rzp = new Razorpay(options);
+
+document
+.getElementById("pay-btn")
+.onclick = function(e){
+
+    rzp.open();
+
+    e.preventDefault();
+
+};
+
+</script>
+{% endblock %}

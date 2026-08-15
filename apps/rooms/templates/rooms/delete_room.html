@@ -1,22 +1,32 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Delete Room</title>
-    </head>
-    <body>
-        <h1>Delete Room</h1>
-        <p>Are you sure you want to delete 
-            <strong>{{ room.title }}</strong>?
-        </p>
+{% extends "base.html" %}
 
-        <form method="POST">
-            {% csrf_token %}
+{% block title %}
+    Delete Room - {{ room.title }} | Room Buddies
+{% endblock %}
 
-            <button type="submit">Yes, Delete</button>
-        </form>
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-modern p-4 text-center border-0 shadow-lg bg-white">
+                <div class="mb-3 text-danger fs-1">🗑️</div>
+                <h3 class="fw-bold text-dark mb-2">Delete Room Listing?</h3>
+                <p class="text-muted mb-4">
+                    Are you sure you want to permanently delete <strong>"{{ room.title }}"</strong>? This action cannot be undone.
+                </p>
 
-        <p>
-            <a href="{% url 'rooms:room_detail' room.id %}">Cancel</a>
-        </p>
-    </body>
-</html>
+                <form method="POST" class="d-flex gap-2 justify-content-center">
+                    {% csrf_token %}
+
+                    <a href="{% url 'rooms:room_detail' room.id %}" class="btn btn-light border px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        Yes, Delete Listing
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

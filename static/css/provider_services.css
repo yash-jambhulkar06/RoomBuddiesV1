@@ -1,0 +1,1080 @@
+/* =========================================================
+   ROOM BUDDIES — PROVIDER SERVICE BOOKINGS
+   ========================================================= */
+
+.provider-bookings-page {
+    min-height: 100vh;
+    padding: 50px 20px 70px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.provider-page-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.provider-page-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 18px;
+    margin-bottom: 16px;
+
+    border: 1px solid rgba(108, 92, 231, 0.18);
+    border-radius: 999px;
+
+    background: rgba(108, 92, 231, 0.10);
+    color: #6c5ce7;
+
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.provider-page-header h1 {
+    margin: 0;
+
+    color: #171526;
+
+    font-size: clamp(30px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.provider-page-header p {
+    margin: 12px 0 0;
+
+    color: #77748a;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   BOOKINGS GRID
+   ========================================================= */
+
+.provider-bookings-grid {
+    max-width: 1180px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+
+/* =========================================================
+   BOOKING CARD
+   ========================================================= */
+
+.service-request-card {
+    position: relative;
+
+    padding: 28px;
+
+    border: 1px solid rgba(108, 92, 231, 0.10);
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    box-shadow:
+        0 10px 35px rgba(32, 25, 67, 0.07);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.service-request-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(108, 92, 231, 0.22);
+
+    box-shadow:
+        0 18px 45px rgba(32, 25, 67, 0.12);
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.service-request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 20px;
+}
+
+.service-request-header h4 {
+    margin: 0 0 5px;
+
+    color: #211d35;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.request-id {
+    color: #918da0;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 30px;
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.status-pending {
+    background: #fff4d6;
+    color: #9a6900;
+}
+
+.status-accepted {
+    background: #e6f8ee;
+    color: #198754;
+}
+
+.status-rejected {
+    background: #fde8eb;
+    color: #c73d50;
+}
+
+.status-completed {
+    background: #eeeaff;
+    color: #6c5ce7;
+}
+
+.status-cancelled {
+    background: #eeeeF2;
+    color: #686575;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.request-divider {
+    height: 1px;
+    margin: 22px 0;
+
+    background: #eeeef3;
+}
+
+
+/* =========================================================
+   CUSTOMER
+   ========================================================= */
+
+.customer-section {
+    margin-bottom: 24px;
+}
+
+.section-label,
+.info-label,
+.service-price > span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #9995a7;
+
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.customer-name {
+    color: #29263a;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.customer-email {
+    display: block;
+    margin-top: 3px;
+
+    color: #858193;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   BOOKING INFORMATION
+   ========================================================= */
+
+.booking-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    margin-bottom: 25px;
+}
+
+.info-box {
+    padding: 15px;
+
+    border: 1px solid #eeeef4;
+    border-radius: 14px;
+
+    background: #fafafe;
+}
+
+.info-box strong {
+    color: #302c42;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   PRICE
+   ========================================================= */
+
+.service-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 17px 0;
+
+    border-top: 1px solid #eeeef3;
+    border-bottom: 1px solid #eeeef3;
+
+    margin-bottom: 22px;
+}
+
+.service-price > span {
+    margin-bottom: 0;
+}
+
+.service-price strong {
+    color: #6c5ce7;
+
+    font-size: 22px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.request-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.request-actions form {
+    margin: 0;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.provider-btn {
+    width: 100%;
+
+    min-height: 46px;
+
+    border: 0;
+    border-radius: 12px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.provider-btn:hover {
+    transform: translateY(-2px);
+}
+
+.provider-btn:active {
+    transform: translateY(0);
+}
+
+
+/* Accept */
+
+.provider-btn-accept {
+    border: 1px solid #36a66f;
+
+    background: #ffffff;
+    color: #198754;
+}
+
+.provider-btn-accept:hover {
+    background: #198754;
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(25, 135, 84, 0.20);
+}
+
+
+/* Reject */
+
+.provider-btn-reject {
+    border: 1px solid #d95368;
+
+    background: #ffffff;
+    color: #d95368;
+}
+
+.provider-btn-reject:hover {
+    background: #d95368;
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(217, 83, 104, 0.20);
+}
+
+
+/* Complete */
+
+.provider-btn-complete {
+    margin-top: 14px;
+
+    background: linear-gradient(
+        135deg,
+        #6c5ce7,
+        #7657d9
+    );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(108, 92, 231, 0.20);
+}
+
+.provider-btn-complete:hover {
+    box-shadow:
+        0 12px 28px rgba(108, 92, 231, 0.30);
+}
+
+
+/* =========================================================
+   PAYMENT STATUS
+   ========================================================= */
+
+.payment-success-box,
+.payment-pending-box {
+    padding: 16px;
+
+    border-radius: 15px;
+
+    margin-bottom: 14px;
+}
+
+.payment-success-box {
+    border: 1px solid #c9eedc;
+    background: #f0fbf5;
+}
+
+.payment-success-title {
+    color: #198754;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.payment-success-box p,
+.payment-pending-box p {
+    margin: 5px 0 0;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.payment-success-box p {
+    color: #5f806e;
+}
+
+.payment-pending-box {
+    border: 1px solid #f4dfaa;
+    background: #fffaf0;
+}
+
+.payment-pending-title {
+    color: #9a6900;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.payment-pending-box p {
+    color: #8b7c58;
+}
+
+
+/* =========================================================
+   FINAL STATES
+   ========================================================= */
+
+.booking-final-state {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    margin-top: 20px;
+    padding: 16px;
+
+    border-radius: 15px;
+
+    font-size: 13px;
+}
+
+.booking-final-state strong {
+    font-size: 14px;
+}
+
+.completed-state {
+    border: 1px solid #d9d1ff;
+    background: #f6f4ff;
+    color: #6c5ce7;
+}
+
+.completed-state span {
+    color: #77718f;
+}
+
+.rejected-state {
+    border: 1px solid #f4cfd5;
+    background: #fff4f5;
+    color: #c73d50;
+}
+
+.rejected-state span {
+    color: #8e6870;
+}
+
+.cancelled-state {
+    border: 1px solid #dedee5;
+    background: #f7f7f9;
+    color: #66636f;
+}
+
+.cancelled-state span {
+    color: #85828e;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-bookings-state {
+    max-width: 600px;
+
+    margin: 50px auto 0;
+    padding: 60px 30px;
+
+    text-align: center;
+
+    border: 1px solid rgba(108, 92, 231, 0.10);
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    box-shadow:
+        0 10px 35px rgba(32, 25, 67, 0.06);
+}
+
+.empty-icon {
+    margin-bottom: 20px;
+
+    font-size: 55px;
+}
+
+.empty-bookings-state h3 {
+    margin-bottom: 8px;
+
+    color: #29263a;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.empty-bookings-state p {
+    margin: 0;
+
+    color: #858193;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .provider-bookings-grid {
+        grid-template-columns: 1fr;
+        max-width: 700px;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .provider-bookings-page {
+        padding: 35px 14px 55px;
+    }
+
+    .provider-page-header {
+        margin-bottom: 35px;
+    }
+
+    .provider-page-header h1 {
+        font-size: 30px;
+    }
+
+    .service-request-card {
+        padding: 21px;
+        border-radius: 18px;
+    }
+
+    .service-request-header {
+        gap: 10px;
+    }
+
+    .service-request-header h4 {
+        font-size: 18px;
+    }
+
+    .status-badge {
+        padding: 5px 9px;
+        font-size: 11px;
+    }
+
+    .booking-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .request-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .service-price strong {
+        font-size: 20px;
+    }
+
+}
+
+
+
+
+/* =========================================================
+   PROVIDER PAYMENTS & EARNINGS
+   ========================================================= */
+
+.provider-payments-page {
+    min-height: 100vh;
+    padding: 50px 20px 70px;
+}
+
+
+/* =========================================================
+   EARNINGS CARD
+   ========================================================= */
+
+.earnings-card {
+    width: min(100%, 460px);
+    margin: 0 auto 55px;
+
+    padding: 32px;
+
+    text-align: center;
+
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(108, 92, 231, 0.10),
+            rgba(255, 255, 255, 0.96)
+        );
+
+    box-shadow:
+        0 15px 45px rgba(32, 25, 67, 0.08);
+}
+
+.earnings-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    border-radius: 18px;
+
+    background: linear-gradient(
+        135deg,
+        #6c5ce7,
+        #8068e8
+    );
+
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    box-shadow:
+        0 10px 25px rgba(108, 92, 231, 0.25);
+}
+
+.earnings-label {
+    color: #858193;
+
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+}
+
+.earnings-amount {
+    margin-top: 7px;
+
+    color: #198754;
+
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.earnings-description {
+    margin-top: 7px;
+
+    color: #9692a3;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   PAYMENT HISTORY HEADER
+   ========================================================= */
+
+.payment-history-header {
+    max-width: 1180px;
+    margin: 0 auto 25px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 20px;
+}
+
+.payment-history-header h2 {
+    margin: 0;
+
+    color: #211d35;
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.payment-history-header p {
+    margin: 6px 0 0;
+
+    color: #858193;
+
+    font-size: 14px;
+}
+
+.payment-count {
+    padding: 7px 13px;
+
+    border-radius: 999px;
+
+    background: #f0edff;
+    color: #6c5ce7;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   PAYMENT GRID
+   ========================================================= */
+
+.payments-grid {
+    max-width: 1180px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+
+/* =========================================================
+   PAYMENT CARD
+   ========================================================= */
+
+.payment-card {
+    padding: 25px;
+
+    border: 1px solid rgba(108, 92, 231, 0.09);
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    box-shadow:
+        0 9px 30px rgba(32, 25, 67, 0.06);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.payment-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(108, 92, 231, 0.20);
+
+    box-shadow:
+        0 18px 40px rgba(32, 25, 67, 0.11);
+}
+
+
+/* =========================================================
+   PAYMENT CARD HEADER
+   ========================================================= */
+
+.payment-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.payment-paid-badge {
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    background: #e8f8ef;
+    color: #198754;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.payment-number {
+    color: #9692a3;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PAYMENT TYPE
+   ========================================================= */
+
+.payment-type-badge {
+    display: inline-flex;
+
+    padding: 6px 10px;
+
+    margin-bottom: 10px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.room-payment {
+    background: #eeeaff;
+    color: #6c5ce7;
+}
+
+.service-payment {
+    background: #e8f6f8;
+    color: #16727a;
+}
+
+.payment-type h3 {
+    margin: 0;
+
+    color: #29263a;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.payment-divider {
+    height: 1px;
+
+    margin: 20px 0;
+
+    background: #eeeef3;
+}
+
+
+/* =========================================================
+   PAYMENT DETAILS
+   ========================================================= */
+
+.payment-detail {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 19px;
+}
+
+.payment-detail-label {
+    margin-bottom: 5px;
+
+    color: #9995a7;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-detail strong {
+    color: #302c42;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+}
+
+.payment-detail-secondary {
+    margin-top: 3px;
+
+    color: #898596;
+
+    font-size: 12px;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   AMOUNT
+   ========================================================= */
+
+.payment-amount-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+
+    margin: 20px 0;
+    padding: 15px;
+
+    border-radius: 13px;
+
+    background: #f5fbf7;
+}
+
+.payment-amount-section span {
+    color: #777f7a;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.payment-amount-section strong {
+    color: #198754;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TRANSACTION
+   ========================================================= */
+
+.transaction-section {
+    padding-top: 15px;
+
+    border-top: 1px solid #eeeef3;
+}
+
+.transaction-section code {
+    display: block;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    background: #f7f7fa;
+
+    color: #6d6879;
+
+    font-size: 10px;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   EMPTY PAYMENT STATE
+   ========================================================= */
+
+.empty-payments-state {
+    max-width: 600px;
+
+    margin: 40px auto 0;
+    padding: 60px 30px;
+
+    text-align: center;
+
+    border: 1px solid rgba(108, 92, 231, 0.10);
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    box-shadow:
+        0 10px 35px rgba(32, 25, 67, 0.06);
+}
+
+.empty-payment-icon {
+    margin-bottom: 18px;
+
+    font-size: 55px;
+}
+
+.empty-payments-state h3 {
+    margin: 0 0 8px;
+
+    color: #29263a;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.empty-payments-state p {
+    margin: 0;
+
+    color: #858193;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .payments-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 780px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .provider-payments-page {
+        padding: 35px 14px 55px;
+    }
+
+    .payments-grid {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+    }
+
+    .payment-history-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .earnings-card {
+        padding: 27px 20px;
+        border-radius: 20px;
+    }
+
+    .payment-card {
+        padding: 21px;
+        border-radius: 18px;
+    }
+
+    .payment-history-header h2 {
+        font-size: 22px;
+    }
+
+    .payment-amount-section {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}

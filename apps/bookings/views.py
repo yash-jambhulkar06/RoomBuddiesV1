@@ -4,6 +4,8 @@ from django.http import HttpResponse,HttpResponseForbidden
 from django.contrib import  messages
 from apps.rooms.models import Room
 from .models import Booking
+from apps.services.notification_service import create_notification
+from apps.notifications.models import Notification
 
 @login_required
 def book_room(request,room_id):
@@ -26,10 +28,19 @@ def book_room(request,room_id):
         
         return redirect("rooms:room_detail",room.id)
     
-    Booking.objects.create(
+    booking=Booking.objects.create(
         user=request.user,
         room=room,
     )
+    
+    create_notification(
+        user=room.owner,
+        title="New Booking Request",
+        message=f"{ request.user.first_name } requested to book '{ room.title }'. ",
+        notification_type=Notification.Type.BOOKING,
+        
+    )
+    
     
     messages.success(request,"Booking request sent successfully!",)
     return redirect("bookings:my_bookings")
@@ -62,6 +73,15 @@ def accept_booking(request,booking_id):
     booking.status=Booking.Status.ACCEPTED
     booking.save()
     
+    create_notification(
+            user=booking.user,
+            title="Booking Accepted",
+            message=f"Your booking for '{ booking.room.title }' has been accepted.",
+            notification_type=Notification.Type.BOOKING,
+            
+        )
+    
+    
     return redirect("bookings:owner_bookings")
 
 
@@ -78,7 +98,14 @@ def reject_booking(request,booking_id):
     booking.status=Booking.Status.REJECTED
     booking.save()
     
-    return("bookings:owner_bookings")
+    create_notification(
+        user=booking.user,
+        title="Booking Rejected",
+        message=f"Your booking for '{booking.room.title}' has been rejected.",
+        notification_type=Notification.Type.BOOKING,
+    )
+    
+    return redirect("bookings:owner_bookings")
 
 
 

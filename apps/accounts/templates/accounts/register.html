@@ -1,23 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Room Buddies</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Create Account</h1>
+{% block title %}
+    Create Account | Room Buddies
+{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card shadow-lg border-0">
+        <div class="auth-header">
+            <div class="auth-brand-logo">✨</div>
+            <h2 class="fw-bold text-dark mb-1">Create Account</h2>
+            <p class="text-muted small">Join Room Buddies to explore rooms and offer services</p>
+        </div>
 
-        {{ form.as_p }}
+        <form method="post">
+            {% csrf_token %}
 
-        <button type="submit">
-            Register
-        </button>
-    </form>
+            {{ form.as_p }}
 
-</body>
-</html>
+            <button type="submit" class="btn btn-gradient w-100 py-2 mt-3 mb-3">
+                Register
+            </button>
+        </form>
+
+        <div class="text-center mt-3 pt-3 border-top">
+            <p class="text-muted small mb-0">
+                Already have an account? 
+                <a href="{% url 'accounts:login' %}" class="fw-bold text-primary">Log in here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

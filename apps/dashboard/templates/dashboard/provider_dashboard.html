@@ -1,242 +1,247 @@
-
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}
+    Provider Dashboard | Room Buddies
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
+
 {% block content %}
-<h1>Provider Dashboard</h1>
-<div class="dashboard-stats">
+<div class="container py-3">
 
-    <div class="stat-card">
-        <h3>🏠 Total Rooms</h3>
-        <h1>{{ stats.total_rooms }}</h1>
-    </div>
-
-    <div class="stat-card">
-        <h3>📅 Total Bookings</h3>
-        <h1>{{ stats.total_bookings }}</h1>
-    </div>
-
-    <div class="stat-card">
-        <h3>⏳ Pending Requests</h3>
-        <h1>{{ stats.pending_requests }}</h1>
-    </div>
-
-    <div class="stat-card">
-        <h3>⭐ Average Rating</h3>
-
-        {% if stats.average_rating %}
-            <h1>{{ stats.average_rating|floatformat:1 }}</h1>
-        {% else %}
-            <h1>0.0</h1>
-        {% endif %}
-
-    </div>
-
-</div>
-
-{% if rooms %}
-<h2 class="mt-5 mb-4">My Rooms</h2>
-
-<div class="row">
-
-{% for room in rooms %}
-
-<div class="col-md-4 mb-4">
-
-    <div class="card h-100 shadow-sm">
-
-        {% if room.image %}
-            <img src="{{ room.image.url }}"
-                 class="card-img-top"
-                 style="height:220px;object-fit:cover;">
-        {% endif %}
-
-        <div class="card-body">
-
-            <h5>{{ room.title }}</h5>
-
-            <p>📍 {{ room.location }}</p>
-
-            <p>💰 ₹{{ room.rent }}/month</p>
-
-            <p>📅 Bookings: {{ room.booking_count }}</p>
-
-            <div class="d-flex gap-2">
-
-                <a href="{% url 'rooms:room_detail' room.id %}"
-                   class="btn btn-primary btn-sm">
-                    View
-                </a>
-
-                <a href="{% url 'rooms:edit_room' room.id %}"
-                   class="btn btn-warning btn-sm">
-                    Edit
-                </a>
-
-                <a href="{% url 'rooms:delete_room' room.id %}"
-                   class="btn btn-danger btn-sm">
-                    Delete
-                </a>
-
-            </div>
-
+    <!-- Page Header & Title -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <span class="badge badge-primary-soft mb-2">Provider Panel</span>
+            <h1 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                <span>📊</span> Provider Dashboard
+            </h1>
+            <p class="text-muted mb-0 small">Overview of your listed properties, booking requests, and performance metrics.</p>
         </div>
 
+        <div class="d-flex flex-wrap gap-2 mt-3 mt-md-0">
+            <a href="{% url 'rooms:create_room' %}" class="btn btn-success btn-sm px-3 shadow-sm">
+                ➕ Add New Room
+            </a>
+            <a href="{% url 'bookings:owner_booking_requests' %}" class="btn btn-primary btn-sm px-3">
+                📅 Booking Requests
+            </a>
+            <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3">
+                🏠 Main Dashboard
+            </a>
+        </div>
     </div>
 
-</div>
-
-<div class="d-flex flex-wrap gap-2 mb-4">
-
-    <a href="{% url 'rooms:create_room' %}" class="btn btn-success">
-        ➕ Add New Room
-    </a>
-
-    <a href="{% url 'bookings:owner_booking_requests' %}" class="btn btn-primary">
-        📅 Booking Requests
-    </a>
-
-    <a href="{% url 'accounts:dashboard' %}" class="btn btn-secondary">
-        🏠 Main Dashboard
-    </a>
-
-</div>
-
-
-
-<h2 class="mt-5 mb-4">Recent Bookings</h2>
-
-<div class="card shadow-sm">
-
-    <div class="card-body">
-
-        {% if recent_bookings %}
-
-        <table class="table table-hover">
-
-            <thead>
-
-                <tr>
-                    <th>User</th>
-                    <th>Room</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for booking in recent_bookings %}
-
-                <tr>
-
-                    <td>{{ booking.user.email }}</td>
-
-                    <td>{{ booking.room.title }}</td>
-
-                    <td>
-
-                        {% if booking.status == "PENDING" %}
-
-                            <span class="badge bg-warning">
-                                Pending
-                            </span>
-
-                        {% elif booking.status == "ACCEPTED" %}
-
-                            <span class="badge bg-success">
-                                Accepted
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge bg-danger">
-                                Rejected
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <td>{{ booking.created_at|date:"d M Y" }}</td>
-
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        {% else %}
-
-        <p>No bookings yet.</p>
-
-        {% endif %}
-
-    </div>
-
-</div>
-
-
-
-<h2 class="mt-5 mb-4">Recent Reviews</h2>
-
-<div class="card shadow-sm">
-    <div class="card-body">
-
-        {% if recent_reviews %}
-
-            {% for review in recent_reviews %}
-
-                <div class="border-bottom mb-3 pb-3">
-
-                    <h5>{{ review.room.title }}</h5>
-
-                    <p>
-                        👤 <strong>{{ review.user.email }}</strong>
-                    </p>
-
-                    <p>
-                        ⭐ {{ review.rating }}/5
-                    </p>
-
-                    <p>
-                        {{ review.comment }}
-                    </p>
-
-                    <small class="text-muted">
-                        {{ review.created_at|date:"d M Y" }}
-                    </small>
-
+    <!-- Statistics Overview Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card-modern p-3 border-0 shadow-sm bg-white h-100">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fs-xs fw-bold text-muted text-uppercase">Total Rooms</span>
+                    <span class="badge badge-primary-soft fs-6">🏠</span>
                 </div>
+                <h2 class="fw-bold text-dark mb-0">{{ stats.total_rooms }}</h2>
+                <small class="text-muted fs-xs">Active Room Listings</small>
+            </div>
+        </div>
 
+        <div class="col-6 col-md-3">
+            <div class="card-modern p-3 border-0 shadow-sm bg-white h-100">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fs-xs fw-bold text-muted text-uppercase">Total Bookings</span>
+                    <span class="badge badge-success-soft fs-6">📅</span>
+                </div>
+                <h2 class="fw-bold text-dark mb-0">{{ stats.total_bookings }}</h2>
+                <small class="text-muted fs-xs">Total Reservations</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card-modern p-3 border-0 shadow-sm bg-white h-100">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fs-xs fw-bold text-muted text-uppercase">Pending Requests</span>
+                    <span class="badge badge-warning-soft fs-6">⏳</span>
+                </div>
+                <h2 class="fw-bold text-dark mb-0">{{ stats.pending_requests }}</h2>
+                <small class="text-muted fs-xs">Awaiting Confirmation</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card-modern p-3 border-0 shadow-sm bg-white h-100">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fs-xs fw-bold text-muted text-uppercase">Average Rating</span>
+                    <span class="badge badge-info-soft fs-6">⭐</span>
+                </div>
+                <h2 class="fw-bold text-dark mb-0">
+                    {% if stats.average_rating %}
+                        {{ stats.average_rating|floatformat:1 }}
+                    {% else %}
+                        0.0
+                    {% endif %}
+                </h2>
+                <small class="text-muted fs-xs">Out of 5.0 Stars</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Rooms Section -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <span>🏠</span> My Listed Rooms
+            </h3>
+            <a href="{% url 'rooms:create_room' %}" class="btn btn-sm btn-outline-primary">
+                + Create Room
+            </a>
+        </div>
+
+        {% if rooms %}
+        <div class="row g-4">
+            {% for room in rooms %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-modern card-hover h-100 border-0 shadow-sm bg-white">
+                    <div style="height: 180px; overflow: hidden; background: #e2e8f0;">
+                        {% if room.image %}
+                            <img src="{{ room.image.url }}" alt="{{ room.title }}" class="w-100 h-100" style="object-fit: cover;">
+                        {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fs-3">🏠</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-3 d-flex flex-column justify-content-between flex-grow-1">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1">{{ room.title }}</h5>
+                            <p class="text-muted small mb-2">📍 {{ room.location }}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fw-bold text-primary">₹{{ room.rent }}/mo</span>
+                                <span class="badge badge-info-soft">Bookings: {{ room.booking_count }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 pt-2 border-top">
+                            <a href="{% url 'rooms:room_detail' room.id %}" class="btn btn-primary btn-sm flex-fill">
+                                View
+                            </a>
+                            <a href="{% url 'rooms:edit_room' room.id %}" class="btn btn-outline-warning btn-sm flex-fill">
+                                Edit
+                            </a>
+                            <a href="{% url 'rooms:delete_room' room.id %}" class="btn btn-outline-danger btn-sm flex-fill">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-
+        </div>
         {% else %}
-
-            <p>No reviews yet.</p>
-
+        <div class="empty-state">
+            <div class="empty-icon">🏠</div>
+            <div class="empty-title">No Rooms Added Yet</div>
+            <div class="empty-subtitle">Create your first room listing to start receiving booking requests from users.</div>
+            <a href="{% url 'rooms:create_room' %}" class="btn btn-primary btn-sm px-4">+ Add Your First Room</a>
+        </div>
         {% endif %}
-
     </div>
-</div>
 
-{% empty %}
+    <!-- Recent Bookings Table -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-7">
+            <div class="card-modern border-0 shadow-sm bg-white p-4 h-100">
+                <h4 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                    <span>📅</span> Recent Bookings
+                </h4>
 
-<div class="col-12">
-    <div class="alert alert-info">
-        You haven't added any rooms yet.
+                {% if recent_bookings %}
+                <div class="table-responsive">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in recent_bookings %}
+                            <tr>
+                                <td class="small">{{ booking.user.email }}</td>
+                                <td class="fw-semibold small text-dark">{{ booking.room.title }}</td>
+                                <td>
+                                    {% if booking.status == "PENDING" %}
+                                        <span class="badge badge-warning-soft">Pending</span>
+                                    {% elif booking.status == "ACCEPTED" %}
+                                        <span class="badge badge-success-soft">Accepted</span>
+                                    {% else %}
+                                        <span class="badge badge-danger-soft">Rejected</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small text-muted">{{ booking.created_at|date:"d M Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted small mb-0">No recent bookings recorded.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Reviews Column -->
+        <div class="col-lg-5">
+            <div class="card-modern border-0 shadow-sm bg-white p-4 h-100">
+                <h4 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                    <span>⭐</span> Recent Reviews
+                </h4>
+
+                {% if recent_reviews %}
+                    {% for review in recent_reviews %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <h6 class="fw-bold text-dark mb-0">{{ review.room.title }}</h6>
+                            <span class="badge badge-warning-soft">⭐ {{ review.rating }}/5</span>
+                        </div>
+                        <small class="text-muted d-block mb-1">👤 {{ review.user.email }}</small>
+                        <p class="small text-secondary mb-1">"{{ review.comment }}"</p>
+                        <small class="text-muted fs-xs">{{ review.created_at|date:"d M Y" }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted small mb-0">No reviews submitted yet.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-</div>
 
-{% endfor %}
+    <!-- Recent Activity Timeline -->
+    <div class="card-modern border-0 shadow-sm bg-white p-4">
+        <h4 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+            <span>📢</span> Recent Activity Log
+        </h4>
+
+        {% if activities %}
+            <div class="space-y-2">
+                {% for activity in activities %}
+                <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between mb-2">
+                    <div>
+                        {% if activity.room %}
+                            <strong class="text-dark">{{ activity.room.title }}</strong>
+                        {% endif %}
+                    </div>
+                    <small class="text-muted">{{ activity.created_at|date:"d M Y H:i" }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+        <p class="text-muted small mb-0">No recent activities logged.</p>
+        {% endif %}
+    </div>
 
 </div>
-{% else %}
-<p>You haven't added any rooms yet.</p>
-{% endif %}
-{% endblock %}
+{% endblock %}

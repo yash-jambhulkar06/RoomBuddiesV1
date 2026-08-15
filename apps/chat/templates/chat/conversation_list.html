@@ -1,91 +1,97 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Chat Conversations | Room Buddies
+{% endblock %}
+
 {% block content %}
-
-<div class="container mt-4">
-
-    <h2 class="mb-4">Conversations</h2>
+<div class="container py-3">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                <span>💬</span> Conversations
+            </h1>
+            <p class="text-muted mb-0 small">Direct messages with room owners and interested tenants.</p>
+        </div>
+    </div>
 
     {% if conversations %}
-
-        <div class="list-group">
-
+        <div class="list-group gap-2 border-0">
             {% for conversation in conversations %}
-
                 <a href="{% url 'chat:chat_room' conversation.id %}"
-                   class="list-group-item list-group-item-action" id="conversation-{{ conversation.id }}">
-                  <h5 class="d-flex justify-content-between align-items-center">
+                   class="list-group-item list-group-item-action card-modern p-3 border-0 shadow-sm d-flex align-items-center justify-content-between" 
+                   id="conversation-{{ conversation.id }}">
+                   
+                   <div class="d-flex align-items-center gap-3 w-100">
+                       <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                           {% if request.user == conversation.user %}
+                               {{ conversation.provider.first_name|default:"U"|first|upper }}
+                           {% else %}
+                               {{ conversation.user.first_name|default:"U"|first|upper }}
+                           {% endif %}
+                       </div>
 
-    <span>
-        {% if request.user == conversation.user %}
-            {{ conversation.provider.first_name }}
-        {% else %}
-            {{ conversation.user.first_name }}
-        {% endif %}
-    </span>
+                       <div class="flex-grow-1 min-w-0">
+                           <div class="d-flex align-items-center justify-content-between mb-1">
+                               <h5 class="fw-bold text-dark mb-0 text-truncate">
+                                   {% if request.user == conversation.user %}
+                                       {{ conversation.provider.first_name }} {{ conversation.provider.last_name }}
+                                   {% else %}
+                                       {{ conversation.user.first_name }} {{ conversation.user.last_name }}
+                                   {% endif %}
+                               </h5>
 
-    {% if conversation.unread_count > 0 %}
-        <span class="badge bg-success rounded-pill">
-            {{ conversation.unread_count }}
-        </span>
-    {% endif %}
+                               <span
+                                   class="badge bg-danger rounded-pill unread-badge"
+                                   id="badge-{{ conversation.id }}"
+                                   {% if conversation.unread_count == 0 %}
+                                       style="display:none;"
+                                   {% endif %}
+                               >
+                                   {{ conversation.unread_count }}
+                               </span>
+                           </div>
 
-</h5>
+                           <p class="mb-1 last-message text-truncate small text-muted">
+                               <span class="badge badge-primary-soft me-1">{{ conversation.room.title }}</span>
+                               {% with last_message=conversation.messages.last %}
+                                   {% if last_message %}
+                                       {% if last_message.sender == request.user %}
+                                           <strong>You:</strong>
+                                       {% endif %}
+                                       {{ last_message.message|truncatechars:40 }}
+                                   {% else %}
+                                       <span class="fst-italic">No messages yet</span>
+                                   {% endif %}
+                               {% endwith %}
+                           </p>
 
-                    <p class="mb-1">
-                        <small class="text-primary">
-                            {{ conversation.room.title }}
-                        </small>
-                        <br>
-                        {% with last_message=conversation.messages.last %}
-
-{% if last_message %}
-
-    {% if last_message.sender == request.user %}
-        <strong>You:</strong>
-    {% endif %}
-
-    {{ last_message.message|truncatechars:40 }}
-
-{% else %}
-
-    No messages yet
-
-{% endif %}
-
-{% endwith %}
-                    </p>
-
-                    <small class="text-muted">
-
-    {% with last_message=conversation.messages.last %}
-
-        {% if last_message %}
-            {{ last_message.created_at|date:"d M H:i" }}
-        {% else %}
-            {{ conversation.created_at|date:"d M H:i" }}
-        {% endif %}
-
-    {% endwith %}
-
-</small>
-
+                           <small class="text-muted last-time fs-xs">
+                               {% with last_message=conversation.messages.last %}
+                                   {% if last_message %}
+                                       {{ last_message.created_at|date:"d M H:i" }}
+                                   {% else %}
+                                       {{ conversation.created_at|date:"d M H:i" }}
+                                   {% endif %}
+                               {% endwith %}
+                           </small>
+                       </div>
+                   </div>
                 </a>
-
             {% endfor %}
-
         </div>
-
     {% else %}
-
-        <div class="alert alert-info">
-            You don't have any conversations yet.
+        <div class="empty-state">
+            <div class="empty-icon">💬</div>
+            <div class="empty-title">No Conversations Yet</div>
+            <div class="empty-subtitle">Start a chat by viewing a room listing and clicking "Contact Owner".</div>
+            <a href="{% url 'rooms:room_list' %}" class="btn btn-primary px-4">Browse Rooms</a>
         </div>
-
     {% endif %}
-
 </div>
+
 <script>
+    const currentUserId="{{ request.user.id }}";
 const conversationSocket = new WebSocket(
     "ws://" + window.location.host + "/ws/conversations/"
 );
@@ -94,19 +100,41 @@ conversationSocket.onopen = function () {
     console.log("✅ Conversation socket connected");
 };
 
-conversationSocket.onclose = function () {
-    console.log("❌ Conversation socket disconnected");
+conversationSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    const conversationId = data.conversation_id;
+    const message = data.message;
+    const senderId = data.sender_id;
+
+    const convElement = document.getElementById("conversation-" + conversationId);
+
+    if (convElement) {
+        const lastMessageElement = convElement.querySelector(".last-message");
+        if (lastMessageElement) {
+            lastMessageElement.innerHTML = message;
+        }
+
+        const timeElement = convElement.querySelector(".last-time");
+        if (timeElement) {
+            timeElement.innerHTML = "Just now";
+        }
+
+        if (String(senderId) !== String(currentUserId)) {
+            const badge = document.getElementById("badge-" + conversationId);
+            if (badge) {
+                let currentCount = parseInt(badge.innerText) || 0;
+                badge.innerText = currentCount + 1;
+                badge.style.display = "inline-block";
+            }
+        }
+
+        const parent = convElement.parentNode;
+        parent.insertBefore(convElement, parent.firstChild);
+    }
 };
 
-conversationSocket.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-    console.log("Conversation Update:", data);
-
-    const item = document.getElementById("conversation-" + data.conversation_id );
-
-    if(item){
-        location.reload();
-    }
+conversationSocket.onclose = function () {
+    console.log("❌ Conversation socket closed");
 };
 </script>
 {% endblock %}
